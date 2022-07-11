@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const NavItem = ({ name }) => {
-  return <a href="/">{name}</a>;
+  return (
+    <p>
+      <a href="/">{name}</a>
+    </p>
+  );
 };
 
 export default NavItem;
