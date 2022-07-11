@@ -1,0 +1,30 @@
+{
+  "name": "UNUKR",
+  "description": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor neque saepe voluptates consectetur sunt ut iste aliquam expedita dolore sit, modi rerum nulla reprehenderit, dicta est. Qui incidunt nisi necessitatibus eligendi dolorem velit dolor laboriosam, dolores ab? Sit itaque quae, totam libero consequuntur atque rem ipsa, cum, excepturi explicabo voluptate.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor neque saepe voluptates consectetur sunt ut iste aliquam expedita dolore sit, modi rerum nulla reprehenderit, dicta est. Qui incidunt nisi necessitatibus eligendi dolorem velit dolor laboriosam, dolores ab? Sit itaque quae, totam libero consequuntur atque rem ipsa, cum, excepturi explicabo voluptate.",
+  "tutors": [
+    {
+      "firstName": "Andrew",
+      "lastName": "Lucik",
+      "patronymic": "Andreevich",
+      "phone": "+38(097) 457 58 85",
+      "email": "lucik@mail.com",
+      "city": "Odessa",
+      "options": "Create groups"
+    },
+    {
+      "firstName": "Pavel",
+      "lastName": "Dzuba",
+      "patronymic": "Sergeevich",
+      "phone": "+38(097) 654 65 85",
+      "email": "Dzuba@mail.com",
+      "city": "Berlin",
+      "options": "Create groups and edit groups"
+    }
+  ],
+  "cities": ["Odessa", "Berlin", "Lviv"],
+  "department": [
+    { "name": "Faculty of Architecture" },
+    { "name": "Faculty of Construction" },
+    { "name": "Faculty of Construction technological" }
+  ]
+}
