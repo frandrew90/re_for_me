@@ -4,9 +4,9 @@ import NavItem from './NavItem/NavItem.js';
 
 const Navigation = () => {
   return (
-    <nav>
+    <nav style={{ paddingTop: 12 }}>
       {navConfig.map(navItem => (
-        <NavItem key={navItem.name} name={navItem.name} />
+        <NavItem key={navItem.name} name={navItem.name} icon={navItem.icon} />
       ))}
     </nav>
   );

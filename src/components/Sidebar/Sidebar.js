@@ -12,7 +12,7 @@ const defineStyles = isOpen => {
 };
 
 const Sidebar = () => {
-  const isOpen = false;
+  const isOpen = true;
   return (
     // <div className={`Sidebar ${isOpen ? '' : 'Sidebar-closed'}`}>
     <div className={defineStyles(isOpen)}>

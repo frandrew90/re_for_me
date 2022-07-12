@@ -10,7 +10,7 @@ const CitiesBlock = ({ cities }) => {
     <div>
       <div>
         <img src={citiesIcon} alt="Cities" />
-        <h3>Cities</h3>
+        <h3 className="heading">Cities</h3>
       </div>
 
       <CitiesList cities={cities} />
