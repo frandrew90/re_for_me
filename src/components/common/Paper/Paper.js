@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import s from './Paper.module.scss';
 
 const Paper = ({ children }) => {
-  return <div className="paper">{children}</div>;
+  return <div className={s.paper}>{children}</div>;
 };
 
 Paper.propTypes = {
