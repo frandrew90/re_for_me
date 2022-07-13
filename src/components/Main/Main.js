@@ -7,8 +7,8 @@ import CitiesBlock from '../CitiesBlock/CitiesBlock';
 import Section from '../common/Section/Section';
 import s from './Main.module.css';
 import tutorsIcon from '../../images/user-tie.svg';
-import citiesIcon from '../../images/cancel-circle.svg';
-import facultyIcon from '../../images/cancel-circle.svg';
+import citiesIcon from '../../images/earth.svg';
+import facultyIcon from '../../images/book.svg';
 import FacultyBlock from '../FacultyBlock/FacultyBlock';
 
 const { name, description, tutors, cities, department } = universityInfo;
