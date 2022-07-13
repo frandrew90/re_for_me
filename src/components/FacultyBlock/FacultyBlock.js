@@ -1,20 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from '../common/Paper/Paper';
+import BigButton from '../common/BigButton/BigButton';
+import addIcon from '../../images/plus.svg';
+import FacultyList from './FacultyList/FacultyList';
 
 const FacultyBlock = ({ department = [] }) => {
   return (
-    <section>
-      <Paper>
-        <ul>
-          {department.map(depart => (
-            <li key={depart.name}>
-              <p>{depart.name}</p>
-            </li>
-          ))}
-        </ul>
-      </Paper>
-    </section>
+    <div>
+      <FacultyList department={department} />
+      <BigButton icon={addIcon} text="Add Faculty" />
+    </div>
   );
 };
 
