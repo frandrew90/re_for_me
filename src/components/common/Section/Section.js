@@ -35,7 +35,7 @@ const sectionStyle = {
 
 const Section = ({ title, icon, children }) => {
   return (
-    <section className="section" css={{ sectionStyle }}>
+    <section className="section" css={sectionStyle}>
       <div className="header">
         <div className="img-wrapper">
           <img src={icon} alt={title} />
