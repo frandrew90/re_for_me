@@ -1,4 +1,4 @@
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import BigButton from '../../common/BigButton/BigButton';
 import Paper from '../../common/Paper/Paper';
@@ -7,7 +7,7 @@ import s from './TutorForm.module.css';
 class TutorForm extends Component {
   render() {
     return (
-      <div className="container">
+      <div className={s.container}>
         <Paper>
           <div className={s.inner}>
             <h4 className="formName">Add Tutor</h4>
@@ -15,33 +15,33 @@ class TutorForm extends Component {
               <input
                 name="lastName"
                 type="text"
-                placeholder="Last name"
+                placeholder="Last name*"
                 required
               />
               <input
                 name="firstName"
                 type="text"
-                placeholder="First name"
+                placeholder="First name*"
                 required
               />
               <input
-                name="patronimyc"
+                name="patronymic"
                 type="text"
-                placeholder="Patronimyc"
+                placeholder="Patronymic*"
                 required
               />
               <input
                 name="phone"
                 type="tel"
-                placeholder="Phone number"
+                placeholder="Phone number*"
                 required
               />
-              <input name="email" type="email" placeholder="Email" required />
-              <input name="city" type="text" placeholder="City" required />
+              <input name="email" type="email" placeholder="Email*" required />
+              <input name="city" type="text" placeholder="City*" required />
               <input
                 name="options"
                 type="text"
-                placeholder="Kind of activity"
+                placeholder="Kind of activity*"
                 required
               />
 
@@ -53,5 +53,9 @@ class TutorForm extends Component {
     );
   }
 }
+
+TutorForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default TutorForm;

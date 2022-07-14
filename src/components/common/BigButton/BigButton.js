@@ -9,6 +9,7 @@ export const btnStyled = {
   justifyContent: 'center',
   padding: '12px 16px',
   backgroundColor: '#FF6B0A',
+  borderRadius: '0.25rem',
   border: 'none',
   cursor: 'pointer',
   transition: 'all 200ms',

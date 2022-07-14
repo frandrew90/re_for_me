@@ -28,6 +28,7 @@ import cancelIcon from '../../images/cancel-circle.svg';
 
 class TutorsBlock extends Component {
   state = {
+    tutors: this.props.tutors,
     isFormOpen: false,
   };
 
@@ -37,11 +38,19 @@ class TutorsBlock extends Component {
     }));
   };
 
+  addTutor = newTutor => {
+    this.setState(prevState => ({
+      tutors: [...prevState.tutors, newTutor],
+    }));
+  };
+
   render() {
+    const { tutors, isFormOpen } = this.state;
+
     return (
       <div css={{ position: 'relative', marginBottom: '32px' }}>
         <ul>
-          {this.props.tutors.map(tutor => (
+          {tutors.map(tutor => (
             <li key={tutor.email} css={{ marginBottom: '24px' }}>
               <Paper>
                 <Tutor tutor={tutor} />
@@ -50,11 +59,11 @@ class TutorsBlock extends Component {
           ))}
         </ul>
 
-        {this.state.isFormOpen && <TutorForm />}
+        {isFormOpen && <TutorForm onSubmit={this.addTutor} />}
 
         <BigButton
-          icon={this.state.isFormOpen ? cancelIcon : addIcon}
-          text={this.state.isFormOpen ? 'Cancel' : 'Add Tutor'}
+          icon={isFormOpen ? cancelIcon : addIcon}
+          text={isFormOpen ? 'Cancel adding' : 'Add Tutor'}
           onClickBtn={this.toggleForm}
         />
       </div>
