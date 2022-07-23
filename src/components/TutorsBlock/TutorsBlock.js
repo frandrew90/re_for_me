@@ -41,6 +41,7 @@ class TutorsBlock extends Component {
   addTutor = newTutor => {
     this.setState(prevState => ({
       tutors: [...prevState.tutors, newTutor],
+      isFormOpen: false,
     }));
   };
 

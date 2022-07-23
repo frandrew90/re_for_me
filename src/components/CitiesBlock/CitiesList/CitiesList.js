@@ -4,19 +4,26 @@ import PropTypes from 'prop-types';
 import dots from '../../../images/make-group.svg';
 import Paper from '../../common/Paper/Paper';
 import { ListStyles, itemStyles } from '../../../styles/listStyles';
+import CardWithMenu from '../../common/CardWithMenu/CardWithMenu';
 
-const CitiesList = ({ cities }) => {
+const CitiesList = ({ cities, onEditCity, onDeleteCity }) => {
   return (
     <ul css={ListStyles}>
       {cities.map((city, idx) => (
         <li key={idx}>
           <Paper>
-            <div css={itemStyles}>
+            {/* <div css={itemStyles}>
               <p>{city}</p>
               <button>
                 <img src={dots} alt="Menu" />
               </button>
-            </div>
+            </div> */}
+
+            <CardWithMenu
+              text={city}
+              onEdit={() => onEditCity(city)}
+              onDelete={() => onDeleteCity(city)}
+            />
           </Paper>
         </li>
       ))}

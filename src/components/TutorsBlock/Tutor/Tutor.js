@@ -54,7 +54,9 @@ const Tutor = ({ tutor }) => {
         </p>
       </div>
       <div>
-        <p>{tutor.options}</p>
+        <p>-{tutor.options}</p>
+        <p>-{tutor.gender}</p>
+        <p>-{tutor.isFullTime ? 'Full time work' : 'Part time work'}</p>
       </div>
     </div>
   );
