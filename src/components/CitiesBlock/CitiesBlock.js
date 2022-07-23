@@ -10,6 +10,7 @@ import AddForm from '../common/AddForm/AddForm';
 import pencilIcon from '../../images/pencil.svg';
 import deleteIcon from '../../images/blocked.svg';
 import Filter from '../common/Filter/Filter';
+import cancelIcon from '../../images/cancel-circle.svg';
 
 // const CitiesBlock = ({ cities }) => {
 //   return (
@@ -41,7 +42,8 @@ class CitiesBlock extends Component {
   };
 
   addCity = city => {
-    const newCity = { name: city };
+    // const newCity = { name: city };
+    const newCity = city;
     this.setState(prevState => ({
       cities: [...prevState.cities, newCity],
       isAddFormOpen: false,
@@ -134,7 +136,7 @@ class CitiesBlock extends Component {
 
           <BigButton
             text={isAddFormOpen ? 'Cancel adding City' : 'Add City'}
-            icon={!isAddFormOpen && addIcon}
+            icon={isAddFormOpen ? cancelIcon : addIcon}
             onClickBtn={this.toggleAddForm}
           />
         </div>
