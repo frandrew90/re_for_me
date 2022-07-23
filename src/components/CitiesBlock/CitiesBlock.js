@@ -7,6 +7,9 @@ import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
+import pencilIcon from '../../images/pencil.svg';
+import deleteIcon from '../../images/blocked.svg';
+import Filter from '../common/Filter/Filter';
 
 // const CitiesBlock = ({ cities }) => {
 //   return (
@@ -26,7 +29,9 @@ class CitiesBlock extends Component {
     cities: this.props.cities,
     isAddFormOpen: false,
     isDeleteModalOpen: false,
+    isEditModalOpen: false,
     activeCity: '',
+    filter: '',
   };
 
   //ADD CITY
@@ -45,9 +50,25 @@ class CitiesBlock extends Component {
 
   //EDIT CITY
 
-  handleStartEditting = activeCity => {};
-  saveEditCity = editCity => {};
-  closeEditModal = () => {};
+  handleStartEditting = activeCity => {
+    this.setState({
+      isEditModalOpen: true,
+      activeCity,
+    });
+  };
+  saveEditCity = editCity => {
+    this.setState(prevState => ({
+      cities: prevState.cities.map(city => {
+        if (city === prevState.activeCity) {
+          return (city = editCity);
+        }
+        return city;
+      }),
+      activeCity: '',
+    }));
+    this.closeEditModal();
+  };
+  closeEditModal = () => this.setState({ isEditModalOpen: false });
 
   //DELETE CITY
 
@@ -68,21 +89,37 @@ class CitiesBlock extends Component {
 
   //FILTER CITY
 
-  handleFilterChange = value => {};
-  getFilteredCities = () => {};
+  handleFilterChange = value => this.setState({ filter: value });
+  getFilteredCities = () => {
+    const { cities, filter } = this.state;
+    const normolizedFilter = filter.toLowerCase();
+    return cities.filter(city => city.toLowerCase().includes(normolizedFilter));
+  };
 
   render() {
-    const { cities, isAddFormOpen, isDeleteModalOpen } = this.state;
+    const {
+      // cities,
+      isAddFormOpen,
+      isDeleteModalOpen,
+      isEditModalOpen,
+      activeCity,
+      filter,
+    } = this.state;
 
-    console.log(this.state.isDeleteModalOpen);
+    const filteredCities = this.getFilteredCities();
 
     return (
       <>
-        {/* <Filter label="Find city:" value={filter} onChange={this.handleFilterChange} /> */}
+        <Filter
+          label="Find city:"
+          value={filter}
+          onFilterChange={this.handleFilterChange}
+        />
 
         <div style={{ marginBottom: 32 }}>
           <CitiesList
-            cities={cities}
+            // cities={cities}
+            cities={filteredCities}
             onEditCity={this.handleStartEditting}
             onDeleteCity={this.handleStartDeleting}
           />
@@ -102,11 +139,11 @@ class CitiesBlock extends Component {
           />
         </div>
 
-        {/* {isEditModalOpen && (
+        {isEditModalOpen && (
           <Modal
             title="Edit information about city"
             onClose={this.closeEditModal}
-            icon={addIcon}
+            icon={pencilIcon}
           >
             <EditCard
               label="City"
@@ -114,13 +151,13 @@ class CitiesBlock extends Component {
               onSave={this.saveEditCity}
             />
           </Modal>
-        )} */}
+        )}
 
         {isDeleteModalOpen && (
           <Modal
             title="Deleting city"
             onClose={this.closeDeleteModal}
-            icon={addIcon}
+            icon={deleteIcon}
           >
             <DeleteCard
               text="City will be deleted"
