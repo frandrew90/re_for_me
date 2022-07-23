@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import s from './Filter.module.css';
 
 const Filter = ({ label = '', onFilterChange, value }) => {
   return (
-    <div>
+    <div className={s.container}>
       <label>
         {label}
         <input
