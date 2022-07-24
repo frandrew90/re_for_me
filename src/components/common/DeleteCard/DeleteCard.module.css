@@ -1,0 +1,12 @@
+.modalContent {
+  text-align: center;
+}
+
+.modalText {
+  margin-bottom: 24px;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: space-around;
+}

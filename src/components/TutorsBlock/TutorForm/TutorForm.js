@@ -172,31 +172,38 @@ class TutorForm extends Component {
 
               <section>
                 <h5 className={s.inner}>Sex*</h5>
-                <label className={s.inner}>Male</label>
-                <input
-                  type="radio"
-                  checked={gender === GENDER.MALE}
-                  name="gender"
-                  value={GENDER.MALE}
-                  onChange={this.handleChange}
-                />
-                <label className={s.inner}>Female</label>
-                <input
-                  type="radio"
-                  checked={gender === GENDER.FEMALE}
-                  name="gender"
-                  value={GENDER.FEMALE}
-                  onChange={this.handleChange}
-                />
+                <div className={s.radioBtnWrapper}>
+                  <label className={s.inner}>Male</label>
+                  <input
+                    className={s.radioBtn}
+                    type="radio"
+                    checked={gender === GENDER.MALE}
+                    name="gender"
+                    value={GENDER.MALE}
+                    onChange={this.handleChange}
+                  />
+                  <label className={s.inner}>Female</label>
+                  <input
+                    className={s.radioBtn}
+                    type="radio"
+                    checked={gender === GENDER.FEMALE}
+                    name="gender"
+                    value={GENDER.FEMALE}
+                    onChange={this.handleChange}
+                  />
+                </div>
               </section>
 
-              <label className={s.inner}>Full time</label>
-              <input
-                name="isFullTime"
-                type="checkbox"
-                checked={isFullTime}
-                onChange={this.handleChange}
-              />
+              <div className={s.checkboxWrapper}>
+                <label className={s.inner}>Full time</label>
+                <input
+                  className={s.checkbox}
+                  name="isFullTime"
+                  type="checkbox"
+                  checked={isFullTime}
+                  onChange={this.handleChange}
+                />
+              </div>
 
               <BigButton
                 type="submit"

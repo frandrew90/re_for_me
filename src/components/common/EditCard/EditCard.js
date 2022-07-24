@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import BigButton from '../BigButton/BigButton';
 import { nanoid } from 'nanoid';
+import s from './EditCard.module.css';
 
 class EditCard extends Component {
   state = {
@@ -28,18 +29,19 @@ class EditCard extends Component {
 
     return (
       <>
-        <form onSubmit={this.handleSubmit} className="form">
+        <form onSubmit={this.handleSubmit} className={s.form}>
           <label htmlFor={this.editInputId}>
             {label}
-            <span className="red">*</span>
+            <span className={s.red}>*</span>
             <input
+              className={s.cityInput}
               id={this.inputId}
               type="text"
               value={input}
               onChange={this.handleChange}
             />
           </label>
-          <div className="btnWrapper">
+          <div className={s.btnWrapper}>
             <BigButton type="submit" text={'Save'} disabled={!input} />
           </div>
         </form>

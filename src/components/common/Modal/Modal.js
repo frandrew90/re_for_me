@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import s from './Modal.module.css';
 
 class Modal extends Component {
   handleBackdropClick = e => {
@@ -12,17 +13,21 @@ class Modal extends Component {
 
     return (
       <>
-        <div className="backdrop" onClick={this.handleBackdropClick}>
-          <div className="modal">
+        <div className={s.backdrop} onClick={this.handleBackdropClick}>
+          <div className={s.modal}>
             <header className="header">
-              <button className="closeBtn" onClick={onClose} aria-label="close">
+              <button
+                className={s.closeBtn}
+                onClick={onClose}
+                aria-label="close"
+              >
                 &times;
               </button>
             </header>
 
-            <div className="content">
-              <div className="lead">
-                <div className="imgWrapper">
+            <div className={s.content}>
+              <div className={s.lead}>
+                <div className={s.imgWrapper}>
                   <img src={icon} alt={title} />
                 </div>
                 <h3 className="heading">{title}</h3>

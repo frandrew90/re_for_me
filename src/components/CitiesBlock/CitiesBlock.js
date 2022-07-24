@@ -8,7 +8,7 @@ import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
 import pencilIcon from '../../images/pencil.svg';
-import deleteIcon from '../../images/blocked.svg';
+import deleteIcon from '../../images/bin.svg';
 import Filter from '../common/Filter/Filter';
 import cancelIcon from '../../images/cancel-circle.svg';
 
@@ -143,7 +143,7 @@ class CitiesBlock extends Component {
 
         {isEditModalOpen && (
           <Modal
-            title="Edit information about city"
+            title="Editing the City"
             onClose={this.closeEditModal}
             icon={pencilIcon}
           >
@@ -157,12 +157,12 @@ class CitiesBlock extends Component {
 
         {isDeleteModalOpen && (
           <Modal
-            title="Deleting city"
+            title="Deleting the City"
             onClose={this.closeDeleteModal}
             icon={deleteIcon}
           >
             <DeleteCard
-              text="City will be deleted"
+              text="Are you sure? The city will be deleted!"
               onDelete={this.deleteCity}
               onClose={this.closeDeleteModal}
             />

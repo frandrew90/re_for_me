@@ -1,8 +1,11 @@
-/** @jsxImportSource @emotion/react */
+// /** @jsxImportSource @emotion/react */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import randomIcon from '../../../images/make-group.svg';
-import { itemStyles } from '../../../styles/listStyles';
+import editIcon from '../../../images/pencil.svg';
+import deleteIcon from '../../../images/bin.svg';
+// import { itemStyles } from '../../../styles/listStyles';
+import s from './CardWithMenu.module.css';
 
 class CardWithMenu extends Component {
   state = {
@@ -29,23 +32,31 @@ class CardWithMenu extends Component {
 
     return (
       <>
-        <div css={itemStyles}>
+        <div className={s.container}>
           <p>{text}</p>
-          <button onClick={this.toggleMenu} aria-label="Menu">
+          <button
+            className={s.menuButton}
+            onClick={this.toggleMenu}
+            aria-label="Menu"
+          >
             <img src={randomIcon} alt="Menu" />
           </button>
           {isMenuOpen && (
-            <div className="menuStyles">
-              <div className="menu-item" onClick={this.handleEdit}>
+            <div className={s.menuStyles}>
+              <div className={s.menuItem} onClick={this.handleEdit}>
                 <span>
-                  <img src={randomIcon} alt="Edit" />
+                  <img className={s.menuItemImg} src={editIcon} alt="Edit" />
                 </span>
                 <span>Edit</span>
               </div>
 
-              <div className="menu-item" onClick={this.handleDelete}>
+              <div className={s.menuItem} onClick={this.handleDelete}>
                 <span>
-                  <img src={randomIcon} alt="Delete" />
+                  <img
+                    className={s.menuItemImg}
+                    src={deleteIcon}
+                    alt="Delete"
+                  />
                 </span>
                 <span>Delete</span>
               </div>
