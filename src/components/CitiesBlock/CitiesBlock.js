@@ -93,7 +93,7 @@ class CitiesBlock extends Component {
         }
         return city;
       }),
-      activeCity: '',
+      // activeCity: '',
     }));
     // this.closeEditModal()
     this.closeModal();
@@ -112,7 +112,7 @@ class CitiesBlock extends Component {
   deleteCity = () => {
     this.setState(prevState => ({
       cities: prevState.cities.filter(city => city !== prevState.activeCity),
-      activeCity: '',
+      // activeCity: '',
     }));
     // this.closeDeleteModal();
     this.closeModal();
