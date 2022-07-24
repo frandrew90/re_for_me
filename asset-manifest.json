@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/re_for_me/static/css/main.0bb5ef32.css",
+    "main.js": "/re_for_me/static/js/main.67059db1.js",
+    "static/media/building2.png": "/re_for_me/static/media/building2.447f05bed6bdce5985fc.png",
+    "static/media/make-group.svg": "/re_for_me/static/media/make-group.6bc46d2543e2595a200a024b5785ca9f.svg",
+    "static/media/earth.svg": "/re_for_me/static/media/earth.a65f50152f0b661ea3f4c08c8a11ca3d.svg",
+    "index.html": "/re_for_me/index.html",
+    "static/media/location2.svg": "/re_for_me/static/media/location2.b053e5cae565c25d5ad64d5818f6f954.svg",
+    "static/media/bin.svg": "/re_for_me/static/media/bin.33509638db3602fb7ff056d2b359f3bd.svg",
+    "static/media/envelop.svg": "/re_for_me/static/media/envelop.cb7fb739fb36e4c5f1030bd508c64451.svg",
+    "static/media/book.svg": "/re_for_me/static/media/book.dd425a82b3eed6149faf35beef14501f.svg",
+    "static/media/cancel-circle.svg": "/re_for_me/static/media/cancel-circle.5316235023f8ff431a6908e72fcf1b1c.svg",
+    "static/media/user-tie.svg": "/re_for_me/static/media/user-tie.b655f4b4a4a6404b554481a3de1a1b22.svg",
+    "static/media/plus.svg": "/re_for_me/static/media/plus.2c0769885ddf752ac1fa3948fd9aaa27.svg",
+    "static/media/mobile.svg": "/re_for_me/static/media/mobile.3f121ad8d7c096c22b9ee849c180a427.svg",
+    "static/media/pencil.svg": "/re_for_me/static/media/pencil.1697c45221ca10d804482e5d39c424ca.svg",
+    "static/media/indent-decrease.svg": "/re_for_me/static/media/indent-decrease.ca607e384a7531d11649.svg",
+    "static/media/indent-increase.svg": "/re_for_me/static/media/indent-increase.d9f3d0625c0b6be97736.svg",
+    "main.0bb5ef32.css.map": "/re_for_me/static/css/main.0bb5ef32.css.map",
+    "main.67059db1.js.map": "/re_for_me/static/js/main.67059db1.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0bb5ef32.css",
+    "static/js/main.67059db1.js"
+  ]
+}
