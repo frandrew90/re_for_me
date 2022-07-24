@@ -28,12 +28,19 @@ import deleteIcon from '../../images/bin.svg';
 
 const STORAGE_KEY = 'cities';
 
+const MODAL = {
+  NONE: 'none',
+  EDIT: 'edit',
+  DELETE: 'delete',
+};
+
 class CitiesBlock extends Component {
   state = {
     cities: this.props.cities,
     isAddFormOpen: false,
-    isDeleteModalOpen: false,
-    isEditModalOpen: false,
+    openedModal: MODAL.NONE,
+    // isDeleteModalOpen: false,
+    // isEditModalOpen: false,
     activeCity: '',
     filter: '',
   };
@@ -73,7 +80,8 @@ class CitiesBlock extends Component {
 
   handleStartEditting = activeCity => {
     this.setState({
-      isEditModalOpen: true,
+      // isEditModalOpen: true,
+      openedModal: MODAL.EDIT,
       activeCity,
     });
   };
@@ -87,15 +95,17 @@ class CitiesBlock extends Component {
       }),
       activeCity: '',
     }));
-    this.closeEditModal();
+    // this.closeEditModal()
+    this.closeModal();
   };
-  closeEditModal = () => this.setState({ isEditModalOpen: false });
+  // closeEditModal = () => this.setState({ isEditModalOpen: false });
 
   //DELETE CITY
 
   handleStartDeleting = activeCity => {
     this.setState({
-      isDeleteModalOpen: true,
+      // isDeleteModalOpen: true,
+      openedModal: MODAL.DELETE,
       activeCity,
     });
   };
@@ -104,9 +114,13 @@ class CitiesBlock extends Component {
       cities: prevState.cities.filter(city => city !== prevState.activeCity),
       activeCity: '',
     }));
-    this.closeDeleteModal();
+    // this.closeDeleteModal();
+    this.closeModal();
   };
-  closeDeleteModal = () => this.setState({ isDeleteModalOpen: false });
+  // closeDeleteModal = () => this.setState({ isDeleteModalOpen: false });
+
+  //CLOSE MODAL
+  closeModal = () => this.setState({ openedModal: MODAL.NONE, activeCity: '' });
 
   //FILTER CITY
 
@@ -121,10 +135,11 @@ class CitiesBlock extends Component {
     const {
       // cities,
       isAddFormOpen,
-      isDeleteModalOpen,
-      isEditModalOpen,
+      // isDeleteModalOpen,
+      // isEditModalOpen,
       activeCity,
       filter,
+      openedModal,
     } = this.state;
 
     const filteredCities = this.getFilteredCities();
@@ -160,10 +175,10 @@ class CitiesBlock extends Component {
           />
         </div>
 
-        {isEditModalOpen && (
+        {openedModal === MODAL.EDIT && (
           <Modal
             title="Editing the City"
-            onClose={this.closeEditModal}
+            onClose={this.closeModal}
             icon={pencilIcon}
           >
             <EditCard
@@ -174,16 +189,16 @@ class CitiesBlock extends Component {
           </Modal>
         )}
 
-        {isDeleteModalOpen && (
+        {openedModal === MODAL.DELETE && (
           <Modal
             title="Deleting the City"
-            onClose={this.closeDeleteModal}
+            onClose={this.closeModal}
             icon={deleteIcon}
           >
             <DeleteCard
               text="Are you sure? The city will be deleted!"
               onDelete={this.deleteCity}
-              onClose={this.closeDeleteModal}
+              onClose={this.closeModal}
             />
           </Modal>
         )}
