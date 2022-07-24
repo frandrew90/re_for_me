@@ -1,5 +1,6 @@
 const ListStyles = {
   display: 'flex',
+
   flexWrap: 'wrap',
   '& li': {
     flex: '0 0 370px',

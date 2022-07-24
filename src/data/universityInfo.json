@@ -6,22 +6,27 @@
       "firstName": "Andrew",
       "lastName": "Lucik",
       "patronymic": "Andreevich",
+      "gender": "male",
       "phone": "+38(097) 457 58 85",
       "email": "lucik@mail.com",
       "city": "Odessa",
-      "options": "Create groups"
+      "options": "Create groups",
+      "isFullTime": true
     },
     {
       "firstName": "Pavel",
       "lastName": "Dzuba",
       "patronymic": "Sergeevich",
+      "gender": "male",
       "phone": "+38(097) 654 65 85",
       "email": "Dzuba@mail.com",
       "city": "Berlin",
-      "options": "Create groups and edit groups"
+      "options": "Create and edit groups",
+      "isFullTime": false
     }
   ],
   "cities": ["Odessa", "Berlin", "Lviv"],
+
   "department": [
     { "name": "Faculty of Architecture" },
     { "name": "Faculty of Construction" },

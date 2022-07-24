@@ -1,0 +1,35 @@
+.inner {
+  padding: 9px 0 9px 14px;
+}
+
+.inner input {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin-bottom: 24px;
+  width: 50%;
+  display: block;
+  /* =========== */
+  height: calc(1.75rem + 2px);
+  padding: 0.15rem 0.25rem;
+  border: 1px solid #bdbdbd;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.inner input:focus {
+  color: #212529;
+  background-color: #fff;
+  border-color: #bdbdbd;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25);
+}
+
+.inner h4 {
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.container {
+  margin-bottom: 24px;
+}
