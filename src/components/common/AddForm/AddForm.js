@@ -7,6 +7,29 @@ import s from './AddForm.module.css';
 class AddForm extends Component {
   state = { city: '' };
 
+  // ==============================================================
+
+  // componentDidMount() {
+  //   console.log('componentDidMount');
+  //   // this.setState() - можно вызывать
+  // }
+
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   console.log('componentDidUpdate');
+
+  //   console.log('prevState', prevState);
+  //   console.log('this.state', this.state);
+  //   // console.log('~snapshot', snapshot);
+  //   // Никогда не обновляем state без проверки
+  //   // this.setState() - можно вызывать
+  // }
+
+  // componentWillUnmount() {
+  //   console.log('componentWillUnmount');
+  //   // this.setState() - НЕЛЬЗЯ вызывать, только чистим сеттаймауті и тд и тп
+  // }
+  // ==============================================================
+
   handleChange = e => {
     const { name, value } = e.target;
     this.setState({ [name]: value });

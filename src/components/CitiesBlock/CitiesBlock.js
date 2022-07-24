@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CitiesList from './CitiesList/CitiesList';
-import addIcon from '../../images/plus.svg';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
-import pencilIcon from '../../images/pencil.svg';
-import deleteIcon from '../../images/bin.svg';
 import Filter from '../common/Filter/Filter';
+import CitiesList from './CitiesList/CitiesList';
+import * as storage from '../../services/localStorage';
 import cancelIcon from '../../images/cancel-circle.svg';
+import pencilIcon from '../../images/pencil.svg';
+import addIcon from '../../images/plus.svg';
+import deleteIcon from '../../images/bin.svg';
 
 // const CitiesBlock = ({ cities }) => {
 //   return (
@@ -25,6 +26,8 @@ import cancelIcon from '../../images/cancel-circle.svg';
 //   cities: PropTypes.array.isRequired,
 // };
 
+const STORAGE_KEY = 'cities';
+
 class CitiesBlock extends Component {
   state = {
     cities: this.props.cities,
@@ -34,6 +37,22 @@ class CitiesBlock extends Component {
     activeCity: '',
     filter: '',
   };
+
+  componentDidMount() {
+    const savedCities = storage.get(STORAGE_KEY);
+    if (savedCities) {
+      this.setState({ cities: savedCities });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { cities } = this.state;
+
+    if (prevState.cities !== cities) {
+      console.log('cities were changed');
+      storage.save(STORAGE_KEY, cities);
+    }
+  }
 
   //ADD CITY
 
