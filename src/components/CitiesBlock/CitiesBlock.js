@@ -133,7 +133,7 @@ class CitiesBlock extends Component {
 
   render() {
     const {
-      // cities,
+      cities,
       isAddFormOpen,
       // isDeleteModalOpen,
       // isEditModalOpen,
@@ -146,19 +146,27 @@ class CitiesBlock extends Component {
 
     return (
       <>
-        <Filter
-          label="Find city:"
-          value={filter}
-          onFilterChange={this.handleFilterChange}
-        />
+        {cities.length > 1 && (
+          <Filter
+            label="Find city:"
+            value={filter}
+            onFilterChange={this.handleFilterChange}
+          />
+        )}
 
         <div style={{ marginBottom: 32 }}>
-          <CitiesList
-            // cities={cities}
-            cities={filteredCities}
-            onEditCity={this.handleStartEditting}
-            onDeleteCity={this.handleStartDeleting}
-          />
+          {!!filteredCities.length && (
+            <CitiesList
+              // cities={cities}
+              cities={filteredCities}
+              onEditCity={this.handleStartEditting}
+              onDeleteCity={this.handleStartDeleting}
+            />
+          )}
+
+          {!cities.length && (
+            <p style={{ marginBottom: 32 }}>There is no one city yet!</p>
+          )}
 
           {isAddFormOpen && (
             <AddForm
