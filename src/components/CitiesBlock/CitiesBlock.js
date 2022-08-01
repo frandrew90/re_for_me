@@ -68,6 +68,11 @@ class CitiesBlock extends Component {
   };
 
   addCity = city => {
+    const isDublicate = this.checkIfDublicate(city);
+    if (isDublicate) {
+      alert(`City ${city} is already in list!`);
+      return;
+    }
     // const newCity = { name: city };
     const newCity = city;
     this.setState(prevState => ({
@@ -75,6 +80,9 @@ class CitiesBlock extends Component {
       isAddFormOpen: false,
     }));
   };
+
+  checkIfDublicate = checkedCity =>
+    this.state.cities.some(city => city === checkedCity);
 
   //EDIT CITY
 
