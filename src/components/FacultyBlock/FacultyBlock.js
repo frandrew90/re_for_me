@@ -10,13 +10,13 @@ import FacultyList from './FacultyList/FacultyList';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
 import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
-// import * as api from '../../services/api';
+import * as api from '../../services/api';
 import cancelIcon from '../../images/cancel-circle.svg';
 import pencilIcon from '../../images/pencil.svg';
 import addIcon from '../../images/plus.svg';
 import deleteIcon from '../../images/bin.svg';
 
-// const API_ENDPOINT = 'departments';
+const API_ENDPOINT = 'departments';
 
 const ACTION = {
   NONE: 'none',
@@ -27,8 +27,8 @@ const ACTION = {
 
 class FacultyBlock extends Component {
   state = {
-    // departments: [],
-    departments: this.props.departments,
+    departments: [],
+    // departments: this.props.departments,
     isAddFormOpen: false,
     openedModal: ACTION.NONE,
     action: ACTION.NONE,
@@ -39,11 +39,48 @@ class FacultyBlock extends Component {
     firstLoading: false,
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.setState({ firstLoading: true });
+    this.fetchDepartments().finally(() =>
+      this.setState({ firstLoading: false }),
+    );
+  }
 
-  componentDidUpdate(prevProps, prevState) {}
+  componentDidUpdate(prevProps, prevState) {
+    const { action } = this.state;
+    if (prevState.action !== action) {
+      switch (action) {
+        case ACTION.ADD:
+          this.addDepartment();
+          break;
+        case ACTION.EDIT:
+          this.editDepartment();
+          break;
+        case ACTION.DELETE:
+          this.deleteDepartment();
+          break;
+        default:
+          return;
+      }
+    }
+  }
 
   componentWillUnmount() {}
+
+  //GET DEPARTMENTS
+
+  fetchDepartments = async () => {
+    this.setState({ loading: true, error: null });
+
+    try {
+      const departments = await api.getData(API_ENDPOINT);
+      this.setState({ departments });
+    } catch (error) {
+      this.setState({ error: error.message });
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
 
   toggleAddForm = () => {
     this.setState(prevState => ({ isAddFormOpen: !prevState.isAddFormOpen }));
@@ -74,7 +111,7 @@ class FacultyBlock extends Component {
       activeDepartment,
     });
   };
-  saveEditDepartment = editDepartment => {
+  editDepartment = editDepartment => {
     this.setState(prevState => ({
       departments: prevState.departments.map(department => {
         if (department.name === prevState.activeDepartment) {
@@ -113,8 +150,6 @@ class FacultyBlock extends Component {
   getFilteredDepartments = () => {
     const { departments, filter } = this.state;
     const normolizedFilter = filter.toLowerCase();
-    console.log('departments', departments);
-    console.log('filter', filter);
     return departments.filter(department =>
       department.name.toLowerCase().includes(normolizedFilter),
     );
@@ -188,7 +223,7 @@ class FacultyBlock extends Component {
             <EditCard
               label="Faculty"
               inputValue={activeDepartment}
-              onSave={this.saveEditDepartment}
+              onSave={this.editDepartment}
             />
           </Modal>
         )}
