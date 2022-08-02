@@ -1,4 +1,5 @@
-const BASE_URL = 'https://62e2710fe8ad6b66d85b6f5e.mockapi.io/';
+// const BASE_URL = 'https://62e2710fe8ad6b66d85b6f5e.mockapi.io';
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 const fetchData = async (path, options = {}) => {
   const res = await fetch(`${BASE_URL}/${path}`, options);

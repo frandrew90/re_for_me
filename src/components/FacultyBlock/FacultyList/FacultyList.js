@@ -10,10 +10,10 @@ const FacultyList = ({ department, onEditDepartment, onDeleteDepartment }) => {
   return (
     <ul css={ListStyles}>
       {department.map(depart => (
-        <li key={depart.name}>
+        <li key={depart.id}>
           <Paper>
             <CardWithMenu
-              text={depart.name}
+              text={`Faculty of ${depart.name}`}
               onEdit={() => onEditDepartment(depart.name)}
               onDelete={() => onDeleteDepartment(depart.name)}
             />

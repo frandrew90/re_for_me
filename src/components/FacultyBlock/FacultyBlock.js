@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
 // import PropTypes from 'prop-types';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
@@ -87,17 +88,52 @@ class FacultyBlock extends Component {
   };
 
   //ADD DEPARTMENT
-  addDepartment = department => {
+  // addDepartment = department => {
+  //   const isDublicate = this.checkIfDublicate(department);
+  //   if (isDublicate) {
+  //     alert(`Department ${department} is already in list!`);
+  //     return;
+  //   }
+  //   const newDepartment = { name: department };
+  //   this.setState(prevState => ({
+  //     departments: [...prevState.departments, newDepartment],
+  //     isAddFormOpen: false,
+  //   }));
+  // };
+
+  addDepartment = async department => {
+    this.setState({ loading: true, error: null });
     const isDublicate = this.checkIfDublicate(department);
     if (isDublicate) {
-      alert(`Department ${department} is already in list!`);
+      this.setState({ loading: false });
+      toast.error(`Department ${department} is already in list!`);
       return;
     }
-    const newDepartment = { name: department };
-    this.setState(prevState => ({
-      departments: [...prevState.departments, newDepartment],
-      isAddFormOpen: false,
-    }));
+    // this.setState({ activeDepartment: department });
+    // const { activeDepartment } = this.state;
+
+    // console.log(this.state.activeDepartment);
+    // console.log(department);
+
+    try {
+      const newDepartment = await api.saveItem(API_ENDPOINT, {
+        name: department,
+      });
+      this.setState(prevState => ({
+        departments: [...prevState.departments, newDepartment],
+      }));
+      toast.success(`Faculty of ${newDepartment.name} was added`);
+    } catch (error) {
+      this.setState({ error: error.message });
+      toast.error('Somthing went wrong');
+    } finally {
+      this.toggleAddForm();
+      this.setState({
+        activeDepartment: null,
+        action: ACTION.NONE,
+        loading: false,
+      });
+    }
   };
 
   checkIfDublicate = department =>
