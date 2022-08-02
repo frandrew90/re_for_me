@@ -11,7 +11,13 @@ import citiesIcon from '../../images/earth.svg';
 import facultyIcon from '../../images/book.svg';
 import FacultyBlock from '../FacultyBlock/FacultyBlock';
 
-const { name, description, tutors, cities, department } = universityInfo;
+const {
+  name,
+  description,
+  // tutors,
+  cities,
+  department,
+} = universityInfo;
 
 const Main = () => {
   return (
@@ -20,7 +26,8 @@ const Main = () => {
       <UniversityBlock name={name} description={description} />
 
       <Section icon={tutorsIcon} title="Tutors">
-        <TutorsBlock tutors={tutors} />
+        {/* <TutorsBlock tutors={tutors} /> */}
+        <TutorsBlock />
       </Section>
 
       <Section icon={citiesIcon} title="Cities">
@@ -28,7 +35,7 @@ const Main = () => {
       </Section>
 
       <Section icon={facultyIcon} title="Faculties">
-        <FacultyBlock department={department} />
+        <FacultyBlock departments={department} />
       </Section>
     </main>
   );
