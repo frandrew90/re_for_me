@@ -6,16 +6,16 @@ import CardWithMenu from '../../common/CardWithMenu/CardWithMenu';
 import { ListStyles } from '../../../styles/listStyles';
 // import dots from '../../../images/make-group.svg';
 
-const FacultyList = ({ department, onEditDepartment, onDeleteDepartment }) => {
+const FacultyList = ({ departments, onEditDepartment, onDeleteDepartment }) => {
   return (
     <ul css={ListStyles}>
-      {department.map(depart => (
+      {departments.map(depart => (
         <li key={depart.id}>
           <Paper>
             <CardWithMenu
               text={`Faculty of ${depart.name}`}
-              onEdit={() => onEditDepartment(depart.name)}
-              onDelete={() => onDeleteDepartment(depart.name)}
+              onEdit={() => onEditDepartment(depart)}
+              onDelete={() => onDeleteDepartment(depart)}
             />
           </Paper>
         </li>
@@ -25,7 +25,7 @@ const FacultyList = ({ department, onEditDepartment, onDeleteDepartment }) => {
 };
 
 FacultyList.propTypes = {
-  department: PropTypes.array.isRequired,
+  departments: PropTypes.array.isRequired,
 };
 
 export default FacultyList;

@@ -30,13 +30,13 @@ class FacultyBlock extends Component {
   state = {
     departments: [],
     // departments: this.props.departments,
+    filter: '',
     isAddFormOpen: false,
     openedModal: ACTION.NONE,
     action: ACTION.NONE,
     activeDepartment: null,
     loading: false,
     error: null,
-    filter: '',
     firstLoading: false,
   };
 
@@ -72,7 +72,6 @@ class FacultyBlock extends Component {
 
   fetchDepartments = async () => {
     this.setState({ loading: true, error: null });
-
     try {
       const departments = await api.getData(API_ENDPOINT);
       this.setState({ departments });
@@ -83,11 +82,11 @@ class FacultyBlock extends Component {
     }
   };
 
+  //ADD DEPARTMENT
   toggleAddForm = () => {
     this.setState(prevState => ({ isAddFormOpen: !prevState.isAddFormOpen }));
   };
 
-  //ADD DEPARTMENT
   // addDepartment = department => {
   //   const isDublicate = this.checkIfDublicate(department);
   //   if (isDublicate) {
@@ -101,33 +100,35 @@ class FacultyBlock extends Component {
   //   }));
   // };
 
-  addDepartment = async department => {
-    this.setState({ loading: true, error: null });
-    const isDublicate = this.checkIfDublicate(department);
+  confirmAdd = departmentName => {
+    const isDublicate = this.checkIfDublicate(departmentName);
     if (isDublicate) {
-      this.setState({ loading: false });
-      toast.error(`Department ${department} is already in list!`);
+      toast.warn(`Department ${departmentName} is already in list!`);
       return;
     }
-    // this.setState({ activeDepartment: department });
-    // const { activeDepartment } = this.state;
+    this.setState({
+      action: ACTION.ADD,
+      activeDepartment: { name: departmentName },
+    });
+  };
 
-    // console.log(this.state.activeDepartment);
-    // console.log(department);
+  checkIfDublicate = departmentName =>
+    this.state.departments.some(({ name }) => name === departmentName);
 
+  addDepartment = async () => {
+    this.setState({ loading: true, error: null });
+    const { activeDepartment } = this.state;
     try {
-      const newDepartment = await api.saveItem(API_ENDPOINT, {
-        name: department,
-      });
+      const newDepartment = await api.saveItem(API_ENDPOINT, activeDepartment);
       this.setState(prevState => ({
         departments: [...prevState.departments, newDepartment],
       }));
+      this.toggleAddForm();
       toast.success(`Faculty of ${newDepartment.name} was added`);
     } catch (error) {
       this.setState({ error: error.message });
-      toast.error('Somthing went wrong');
+      toast.error(`Somthing went wrong! Error: ${error.message}`);
     } finally {
-      this.toggleAddForm();
       this.setState({
         activeDepartment: null,
         action: ACTION.NONE,
@@ -136,9 +137,6 @@ class FacultyBlock extends Component {
     }
   };
 
-  checkIfDublicate = department =>
-    this.state.departments.some(({ name }) => name === department);
-  // =========================================
   //EDIT DEPARTMENT
 
   handleStartEditting = activeDepartment => {
@@ -147,16 +145,59 @@ class FacultyBlock extends Component {
       activeDepartment,
     });
   };
-  editDepartment = editDepartment => {
-    this.setState(prevState => ({
-      departments: prevState.departments.map(department => {
-        if (department.name === prevState.activeDepartment) {
-          return { ...department, name: editDepartment };
-        }
-        return department;
-      }),
-    }));
-    this.closeModal();
+
+  confirmEdit = editDepartmentName => {
+    const { activeDepartment } = this.state;
+    if (editDepartmentName === activeDepartment.name) {
+      // this.setState({ openedModal: ACTION.NONE, activeDepartment: null });
+      this.closeModal();
+      return;
+    }
+    this.setState({
+      action: ACTION.EDIT,
+      activeDepartment: {
+        ...activeDepartment,
+        name: editDepartmentName,
+      },
+    });
+  };
+
+  // editDepartment = editDepartment => {
+  //   this.setState(prevState => ({
+  //     departments: prevState.departments.map(department => {
+  //       if (department.name === prevState.activeDepartment) {
+  //         return { ...department, name: editDepartment };
+  //       }
+  //       return department;
+  //     }),
+  //   }));
+  //   this.closeModal();
+  // };
+
+  editDepartment = async () => {
+    this.setState({ loading: true, error: null });
+    const { activeDepartment } = this.state;
+    try {
+      const updatedDepartment = await api.editItem(
+        API_ENDPOINT,
+        activeDepartment,
+      );
+      this.setState(prevState => ({
+        departments: prevState.departments.map(depart =>
+          depart.id === updatedDepartment.id ? updatedDepartment : depart,
+        ),
+      }));
+    } catch (error) {
+      this.setState({ error: error.message });
+      toast.error(`Somthing went wrong! Error: ${error.message}`);
+    } finally {
+      this.closeModal();
+      this.setState({
+        // activeDepartment: null,
+        action: ACTION.NONE,
+        loading: false,
+      });
+    }
   };
 
   //DELETE DEPARTMENT
@@ -167,18 +208,43 @@ class FacultyBlock extends Component {
       activeDepartment,
     });
   };
-  deleteDepartment = () => {
-    this.setState(prevState => ({
-      departments: prevState.departments.filter(
-        department => department.name !== prevState.activeDepartment,
-      ),
-    }));
-    this.closeModal();
+
+  confirmDelete = () => this.setState({ action: ACTION.DELETE });
+
+  deleteDepartment = async () => {
+    this.setState({ loading: true, error: null });
+    const { activeDepartment } = this.state;
+    try {
+      const deletedDepartment = await api.deleteItem(
+        API_ENDPOINT,
+        activeDepartment.id,
+      );
+      this.setState(prevState => ({
+        departments: prevState.departments.filter(
+          depart => depart.id !== deletedDepartment.id,
+        ),
+      }));
+    } catch (error) {
+      this.setState({ error: error.message });
+      toast.error(`Somthing went wrong! Error: ${error.message}`);
+    } finally {
+      this.closeModal();
+      this.setState({ loading: false, action: ACTION.NONE });
+    }
   };
+
+  // deleteDepartment = () => {
+  //   this.setState(prevState => ({
+  //     departments: prevState.departments.filter(
+  //       department => department.name !== prevState.activeDepartment,
+  //     ),
+  //   }));
+  //   this.closeModal();
+  // };
 
   //CLOSE MODAL
   closeModal = () =>
-    this.setState({ openedModal: ACTION.NONE, activeDepartment: '' });
+    this.setState({ openedModal: ACTION.NONE, activeDepartment: null });
 
   //FILTER DEPARTMENT
 
@@ -225,7 +291,7 @@ class FacultyBlock extends Component {
         <div>
           {!!filteredDepartments.length && (
             <FacultyList
-              department={filteredDepartments}
+              departments={filteredDepartments}
               onEditDepartment={this.handleStartEditting}
               onDeleteDepartment={this.handleStartDeleting}
             />
@@ -235,7 +301,7 @@ class FacultyBlock extends Component {
 
           {isAddFormOpen && (
             <AddForm
-              onSubmit={this.addDepartment}
+              onSubmit={this.confirmAdd}
               formName="Adding faculty"
               placeholder="Faculty"
             />
@@ -247,6 +313,7 @@ class FacultyBlock extends Component {
             text={isAddFormOpen ? 'Cancel adding Faculty' : 'Add Faculty'}
             icon={isAddFormOpen ? cancelIcon : addIcon}
             onClickBtn={this.toggleAddForm}
+            disabled={loading}
           />
         </div>
 
@@ -258,8 +325,8 @@ class FacultyBlock extends Component {
           >
             <EditCard
               label="Faculty"
-              inputValue={activeDepartment}
-              onSave={this.editDepartment}
+              inputValue={activeDepartment.name}
+              onSave={this.confirmEdit}
             />
           </Modal>
         )}
@@ -272,7 +339,7 @@ class FacultyBlock extends Component {
           >
             <DeleteCard
               text="Are you sure? The faculty will be deleted!"
-              onDelete={this.deleteDepartment}
+              onDelete={this.confirmDelete}
               onClose={this.closeModal}
             />
           </Modal>
