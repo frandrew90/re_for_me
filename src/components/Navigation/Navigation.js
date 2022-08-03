@@ -1,8 +1,8 @@
 import React from 'react';
-import { navConfig } from '../../data/navigation.js';
+// import { navConfig } from '../../data/navigation.js';
 import NavItem from './NavItem/NavItem.js';
 
-const Navigation = () => {
+const Navigation = ({ navConfig }) => {
   return (
     <nav style={{ paddingTop: 12 }}>
       {navConfig.map(navItem => (
