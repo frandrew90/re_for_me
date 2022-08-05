@@ -1,64 +1,77 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import s from './Modal.module.css';
 
 const modalRootRef = document.querySelector('#modal-root');
 
-class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.onEscPress);
-  }
+const Modal = ({ onClose, icon, title, children }) => {
+  useEffect(() => {
+    const onEscPress = e => {
+      if (e.code === 'Escape') {
+        console.log('Escape');
+        onClose();
+      }
+    };
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onEscPress);
-  }
+    window.addEventListener('keydown', onEscPress);
+    return () => {
+      window.removeEventListener('keydown', onEscPress);
+    };
+  }, [onClose]);
 
-  onEscPress = e => {
-    if (e.code === 'Escape') {
-      console.log('ESC');
-      this.props.onClose();
-    }
-  };
+  // useEffect(() => {
+  //   console.log('useEffect ');
+  //   return () => {
+  //     console.log('unmount ');
+  //   };
+  // });
 
-  handleBackdropClick = e => {
+  // componentDidMount:
+  // useEffect(() => { }, []);
+
+  // componentDidMount + componentDidUpdate:
+  // useEffect(() => { },);
+
+  // componentDidMount + componentDidUpdate(следит только за children):
+  // useEffect(() => { }, [children]);
+
+  // componentDidMount + componentDidUpdate + componentWillUnmount (то что в return):
+  // useEffect(() => {
+  //   return () => {};
+  // }, []);
+
+  const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
-      this.props.onClose();
+      onClose();
     }
   };
-  render() {
-    const { onClose, icon, title, children } = this.props;
 
-    return createPortal(
-      <>
-        <div className={s.backdrop} onClick={this.handleBackdropClick}>
-          <div className={s.modal}>
-            <header className="header">
-              <button
-                className={s.closeBtn}
-                onClick={onClose}
-                aria-label="close"
-              >
-                &times;
-              </button>
-            </header>
+  return createPortal(
+    <>
+      <div className={s.backdrop} onClick={handleBackdropClick}>
+        <div className={s.modal}>
+          <header className="header">
+            <button className={s.closeBtn} onClick={onClose} aria-label="close">
+              &times;
+            </button>
+          </header>
 
-            <div className={s.content}>
-              <div className={s.lead}>
-                <div className={s.imgWrapper}>
-                  <img src={icon} alt={title} />
-                </div>
-                <h3 className="heading">{title}</h3>
+          <div className={s.content}>
+            <div className={s.lead}>
+              <div className={s.imgWrapper}>
+                <img src={icon} alt={title} />
               </div>
-              {children}
+              <h3 className="heading">{title}</h3>
             </div>
+            {children}
           </div>
         </div>
-      </>,
-      modalRootRef,
-    );
-  }
-}
+      </div>
+    </>,
+    modalRootRef,
+  );
+};
 
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
