@@ -1,230 +1,278 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+// import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
 import Filter from '../common/Filter/Filter';
+import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
+import Loader from '../common/Loader/Loader';
+import Skeleton from '../common/Skeleton/Skeleton';
 import CitiesList from './CitiesList/CitiesList';
 import * as storage from '../../services/localStorage';
+import * as api from '../../services/api';
 import cancelIcon from '../../images/cancel-circle.svg';
 import pencilIcon from '../../images/pencil.svg';
 import addIcon from '../../images/plus.svg';
 import deleteIcon from '../../images/bin.svg';
 
-// const CitiesBlock = ({ cities }) => {
-//   return (
-//     <div style={{ marginBottom: 32 }}>
-//       <CitiesList cities={cities} />
-//       <BigButton icon={addIcon} text="Add City" />
-//     </div>
-//   );
-// };
+const API_ENDPOINT = 'cities';
 
-// CitiesBlock.propTypes = {
-//   cities: PropTypes.array.isRequired,
-// };
-
-const STORAGE_KEY = 'cities';
-
-const MODAL = {
+const ACTION = {
   NONE: 'none',
+  ADD: 'add',
   EDIT: 'edit',
   DELETE: 'delete',
 };
 
-class CitiesBlock extends Component {
-  state = {
-    cities: this.props.cities,
-    isAddFormOpen: false,
-    openedModal: MODAL.NONE,
-    // isDeleteModalOpen: false,
-    // isEditModalOpen: false,
-    activeCity: '',
-    filter: '',
-  };
+const CitiesBlock = () => {
+  const [cities, setCities] = useState([]);
+  const [filter, setFilter] = useState('');
+  //form/modal
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState(ACTION.NONE);
+  //actions
+  const [action, setAction] = useState(ACTION.NONE);
+  const [activeCity, setActiveCity] = useState(null);
+  //api request status
+  const [firstLoading, setFirstLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  componentDidMount() {
-    const savedCities = storage.get(STORAGE_KEY);
-    if (savedCities) {
-      this.setState({ cities: savedCities });
-    }
-  }
+  //GET CITIES
 
-  componentDidUpdate(prevProps, prevState) {
-    const { cities } = this.state;
+  useEffect(() => {
+    const fetchCities = async () => {
+      setFirstLoading(true);
+      setLoading(true);
+      setError(null);
 
-    if (prevState.cities !== cities) {
-      console.log('cities were changed');
-      storage.save(STORAGE_KEY, cities);
-    }
-  }
+      try {
+        const cities = await api.getData(API_ENDPOINT);
+        setCities(cities);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+        setFirstLoading(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
+
+  console.log(cities);
 
   //ADD CITY
 
-  toggleAddForm = () => {
-    this.setState(prevState => ({ isAddFormOpen: !prevState.isAddFormOpen }));
+  const toggleAddForm = () => {
+    setIsAddFormOpen(prevIsAddFormOpen => !prevIsAddFormOpen);
   };
 
-  addCity = city => {
-    const isDublicate = this.checkIfDublicate(city);
+  const confirmAdd = cityName => {
+    const isDublicate = checkIfDublicate(cityName);
     if (isDublicate) {
-      alert(`City ${city} is already in list!`);
+      toast.warn(`City ${cityName} is already in list!`);
       return;
     }
-    // const newCity = { name: city };
-    const newCity = city;
-    this.setState(prevState => ({
-      cities: [...prevState.cities, newCity],
-      isAddFormOpen: false,
-    }));
+    setActiveCity({ name: cityName });
+    setAction(ACTION.ADD);
   };
 
-  checkIfDublicate = checkedCity =>
-    this.state.cities.some(city => city === checkedCity);
+  const checkIfDublicate = cityName =>
+    cities.some(city => city.name === cityName);
+
+  useEffect(() => {
+    if (action !== ACTION.ADD) return;
+
+    const addCity = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const newCity = await api.saveItem(API_ENDPOINT, activeCity);
+        setCities(prevCities => [...prevCities, newCity]);
+        toggleAddForm();
+        toast.success(`City ${newCity.name} was added`);
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Somthing went wrong! Error: ${error.message}`);
+      } finally {
+        setAction(ACTION.NONE);
+        setLoading(false);
+        setActiveCity(null);
+      }
+    };
+    addCity();
+  }, [action, activeCity]);
 
   //EDIT CITY
 
-  handleStartEditting = activeCity => {
-    this.setState({
-      // isEditModalOpen: true,
-      openedModal: MODAL.EDIT,
-      activeCity,
-    });
+  const handleStartEditting = activeCity => {
+    setActiveCity(activeCity);
+    setOpenedModal(ACTION.EDIT);
   };
-  saveEditCity = editCity => {
-    this.setState(prevState => ({
-      cities: prevState.cities.map(city => {
-        if (city === prevState.activeCity) {
-          return (city = editCity);
-        }
-        return city;
-      }),
-      // activeCity: '',
-    }));
-    // this.closeEditModal()
-    this.closeModal();
+
+  const confirmEdit = editedCityName => {
+    if (editedCityName === activeCity.name) {
+      closeModal();
+      return;
+    }
+    setAction(ACTION.EDIT);
+    setActiveCity({ ...activeCity, name: editedCityName });
   };
-  // closeEditModal = () => this.setState({ isEditModalOpen: false });
+
+  useEffect(() => {
+    if (action !== ACTION.EDIT) return;
+
+    const editCity = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const updatedCity = await api.editItem(API_ENDPOINT, activeCity);
+        setCities(prevCities =>
+          prevCities.map(city =>
+            city.id === updatedCity.id ? updatedCity : city,
+          ),
+        );
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Somthing went wrong! Error: ${error.message}`);
+      } finally {
+        setAction(ACTION.NONE);
+        closeModal();
+        setLoading(false);
+        setActiveCity(null);
+      }
+    };
+    editCity();
+  }, [action, activeCity]);
 
   //DELETE CITY
 
-  handleStartDeleting = activeCity => {
-    this.setState({
-      // isDeleteModalOpen: true,
-      openedModal: MODAL.DELETE,
-      activeCity,
-    });
+  const handleStartDeleting = activeCity => {
+    setActiveCity(activeCity);
+    setOpenedModal(ACTION.DELETE);
   };
-  deleteCity = () => {
-    this.setState(prevState => ({
-      cities: prevState.cities.filter(city => city !== prevState.activeCity),
-      // activeCity: '',
-    }));
-    // this.closeDeleteModal();
-    this.closeModal();
-  };
-  // closeDeleteModal = () => this.setState({ isDeleteModalOpen: false });
+
+  const confirmDelete = () => setAction(ACTION.DELETE);
+
+  useEffect(() => {
+    if (action !== ACTION.DELETE) return;
+
+    const deleteCity = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const deletedCity = await api.deleteItem(API_ENDPOINT, activeCity.id);
+        setCities(prevCities =>
+          prevCities.filter(city => city.id !== deletedCity.id),
+        );
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Somthing went wrong! Error: ${error.message}`);
+      } finally {
+        setAction(ACTION.NONE);
+        closeModal();
+        setLoading(false);
+        setActiveCity(null);
+      }
+    };
+    deleteCity();
+  }, [action, activeCity]);
 
   //CLOSE MODAL
-  closeModal = () => this.setState({ openedModal: MODAL.NONE, activeCity: '' });
+  const closeModal = () => {
+    setActiveCity(null);
+    setOpenedModal(ACTION.NONE);
+  };
 
   //FILTER CITY
 
-  handleFilterChange = value => this.setState({ filter: value });
-  getFilteredCities = () => {
-    const { cities, filter } = this.state;
+  const handleFilterChange = value => setFilter(value);
+
+  const getFilteredCities = () => {
     const normolizedFilter = filter.toLowerCase();
-    return cities.filter(city => city.toLowerCase().includes(normolizedFilter));
+    return cities.filter(city =>
+      city.name.toLowerCase().includes(normolizedFilter),
+    );
   };
 
-  render() {
-    const {
-      cities,
-      isAddFormOpen,
-      // isDeleteModalOpen,
-      // isEditModalOpen,
-      activeCity,
-      filter,
-      openedModal,
-    } = this.state;
+  //RENDER
 
-    const filteredCities = this.getFilteredCities();
+  const filteredCities = getFilteredCities();
 
-    return (
-      <>
-        {cities.length > 1 && (
-          <Filter
-            label="Find city:"
-            value={filter}
-            onFilterChange={this.handleFilterChange}
+  const noCities = !firstLoading && !cities.length;
+
+  return (
+    <>
+      {loading && <Loader />}
+
+      {firstLoading && <Skeleton />}
+
+      {cities.length > 1 && (
+        <Filter
+          label="Find city:"
+          value={filter}
+          onFilterChange={handleFilterChange}
+        />
+      )}
+
+      <div style={{ marginBottom: 32 }}>
+        {!!filteredCities.length && (
+          <CitiesList
+            cities={filteredCities}
+            onEditCity={handleStartEditting}
+            onDeleteCity={handleStartDeleting}
           />
         )}
 
-        <div style={{ marginBottom: 32 }}>
-          {!!filteredCities.length && (
-            <CitiesList
-              // cities={cities}
-              cities={filteredCities}
-              onEditCity={this.handleStartEditting}
-              onDeleteCity={this.handleStartDeleting}
-            />
-          )}
+        {noCities && (
+          <p style={{ marginBottom: 32 }}>There is no one city yet!</p>
+        )}
 
-          {!cities.length && (
-            <p style={{ marginBottom: 32 }}>There is no one city yet!</p>
-          )}
-
-          {isAddFormOpen && (
-            <AddForm
-              onSubmit={this.addCity}
-              formName="Adding city"
-              placeholder="City"
-            />
-          )}
-
-          <BigButton
-            text={isAddFormOpen ? 'Cancel adding City' : 'Add City'}
-            icon={isAddFormOpen ? cancelIcon : addIcon}
-            onClickBtn={this.toggleAddForm}
+        {isAddFormOpen && (
+          <AddForm
+            onSubmit={confirmAdd}
+            formName="Adding city"
+            placeholder="City"
           />
-        </div>
-
-        {openedModal === MODAL.EDIT && (
-          <Modal
-            title="Editing the City"
-            onClose={this.closeModal}
-            icon={pencilIcon}
-          >
-            <EditCard
-              label="City"
-              inputValue={activeCity}
-              onSave={this.saveEditCity}
-            />
-          </Modal>
         )}
 
-        {openedModal === MODAL.DELETE && (
-          <Modal
-            title="Deleting the City"
-            onClose={this.closeModal}
-            icon={deleteIcon}
-          >
-            <DeleteCard
-              text="Are you sure? The city will be deleted!"
-              onDelete={this.deleteCity}
-              onClose={this.closeModal}
-            />
-          </Modal>
-        )}
-      </>
-    );
-  }
-}
+        {error && <ErrorMsg message={error} />}
 
-CitiesBlock.propTypes = {
-  cities: PropTypes.array.isRequired,
+        <BigButton
+          text={isAddFormOpen ? 'Cancel adding City' : 'Add City'}
+          icon={isAddFormOpen ? cancelIcon : addIcon}
+          onClickBtn={toggleAddForm}
+          disabled={loading}
+        />
+      </div>
+
+      {openedModal === ACTION.EDIT && (
+        <Modal title="Editing the City" onClose={closeModal} icon={pencilIcon}>
+          <EditCard
+            label="City"
+            inputValue={activeCity.name}
+            onSave={confirmEdit}
+          />
+        </Modal>
+      )}
+
+      {openedModal === ACTION.DELETE && (
+        <Modal title="Deleting the City" onClose={closeModal} icon={deleteIcon}>
+          <DeleteCard
+            text="Are you sure? The city will be deleted!"
+            onDelete={confirmDelete}
+            onClose={closeModal}
+          />
+        </Modal>
+      )}
+    </>
+  );
 };
 
 export default CitiesBlock;

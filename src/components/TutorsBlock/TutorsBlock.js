@@ -35,7 +35,7 @@ const TutorsBlock = () => {
       try {
         const tutors = await api.getData(API_ENDPOINT);
         setTutors(tutors);
-        console.log(tutors);
+        // console.log(tutors);
       } catch (error) {
         setError(error.message);
       } finally {

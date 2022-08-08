@@ -10,18 +10,11 @@ import { ListStyles } from '../../../styles/listStyles';
 const CitiesList = ({ cities, onEditCity, onDeleteCity }) => {
   return (
     <ul css={ListStyles}>
-      {cities.map((city, idx) => (
-        <li key={idx}>
+      {cities.map(city => (
+        <li key={city.id}>
           <Paper>
-            {/* <div css={itemStyles}>
-              <p>{city}</p>
-              <button>
-                <img src={dots} alt="Menu" />
-              </button>
-            </div> */}
-
             <CardWithMenu
-              text={city}
+              text={city.name}
               onEdit={() => onEditCity(city)}
               onDelete={() => onDeleteCity(city)}
             />
