@@ -7,7 +7,8 @@ import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
 import Filter from '../common/Filter/Filter';
-import FacultyList from './FacultyList/FacultyList';
+// import FacultyList from './FacultyList/FacultyList';
+import ItemsList from '../common/ItemsList/ItemsList';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
 import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
@@ -290,10 +291,10 @@ class FacultyBlock extends Component {
 
         <div>
           {!!filteredDepartments.length && (
-            <FacultyList
-              departments={filteredDepartments}
-              onEditDepartment={this.handleStartEditting}
-              onDeleteDepartment={this.handleStartDeleting}
+            <ItemsList
+              items={filteredDepartments}
+              onEditItem={this.handleStartEditting}
+              onDeleteItem={this.handleStartDeleting}
             />
           )}
 

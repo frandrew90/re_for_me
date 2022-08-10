@@ -27,6 +27,8 @@ const CitiesList = ({ cities, onEditCity, onDeleteCity }) => {
 
 CitiesList.propTypes = {
   cities: PropTypes.array.isRequired,
+  onEditCity: PropTypes.func.isRequired,
+  onDeleteCity: PropTypes.func.isRequired,
 };
 
 export default CitiesList;

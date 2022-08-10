@@ -14,8 +14,6 @@ const App = () => {
       prevTheme === themes.light ? themes.dark : themes.light,
     );
 
-  console.log(theme);
-
   return (
     <div className="main-container">
       <ThemeContext.Provider value={{ theme, toggleTheme }}>

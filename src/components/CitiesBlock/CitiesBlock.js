@@ -10,7 +10,8 @@ import Filter from '../common/Filter/Filter';
 import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
-import CitiesList from './CitiesList/CitiesList';
+// import CitiesList from './CitiesList/CitiesList';
+import ItemsList from '../common/ItemsList/ItemsList';
 import * as storage from '../../services/localStorage';
 import * as api from '../../services/api';
 import cancelIcon from '../../images/cancel-circle.svg';
@@ -227,10 +228,10 @@ const CitiesBlock = () => {
 
       <div style={{ marginBottom: 32 }}>
         {!!filteredCities.length && (
-          <CitiesList
-            cities={filteredCities}
-            onEditCity={handleStartEditting}
-            onDeleteCity={handleStartDeleting}
+          <ItemsList
+            items={filteredCities}
+            onEditItem={handleStartEditting}
+            onDeleteItem={handleStartDeleting}
           />
         )}
 
