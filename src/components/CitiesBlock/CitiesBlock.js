@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 // import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import BigButton from '../common/BigButton/BigButton';
@@ -111,10 +111,10 @@ const CitiesBlock = () => {
 
   //EDIT CITY
 
-  const handleStartEditting = activeCity => {
+  const handleStartEditting = useCallback(activeCity => {
     setActiveCity(activeCity);
     setOpenedModal(ACTION.EDIT);
-  };
+  }, []);
 
   const confirmEdit = editedCityName => {
     if (editedCityName === activeCity.name) {
@@ -154,10 +154,10 @@ const CitiesBlock = () => {
 
   //DELETE CITY
 
-  const handleStartDeleting = activeCity => {
+  const handleStartDeleting = useCallback(activeCity => {
     setActiveCity(activeCity);
     setOpenedModal(ACTION.DELETE);
-  };
+  }, []);
 
   const confirmDelete = () => setAction(ACTION.DELETE);
 
@@ -199,18 +199,25 @@ const CitiesBlock = () => {
 
   const handleFilterChange = value => setFilter(value);
 
-  const getFilteredCities = () => {
+  const filteredCities = useMemo(() => {
     const normolizedFilter = filter.toLowerCase();
     return cities.filter(city =>
       city.name.toLowerCase().includes(normolizedFilter),
     );
-  };
+  }, [cities, filter]);
+
+  // const getFilteredCities = () => {
+  //   const normolizedFilter = filter.toLowerCase();
+  //   return cities.filter(city =>
+  //     city.name.toLowerCase().includes(normolizedFilter),
+  //   );
+  // };
 
   //RENDER
 
-  const filteredCities = getFilteredCities();
+  // const filteredCities = getFilteredCities();
 
-  const noCities = !firstLoading && !cities.length;
+  const noCities = !firstLoading && !loading && !cities.length;
 
   return (
     <>

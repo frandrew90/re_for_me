@@ -1,12 +1,24 @@
 /** @jsxImportSource @emotion/react */
-import React from 'react';
+import React, { memo } from 'react';
+// import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Paper from '../Paper/Paper';
 import CardWithMenu from '../CardWithMenu/CardWithMenu';
 import { ListStyles } from '../../../styles/listStyles';
 
 const ItemsList = ({ items, onEditItem, onDeleteItem }) => {
-  console.log('itemsList');
+  // console.log('itemsList');
+
+  // useEffect(() => {
+  //   console.log('items');
+  // }, [items]);
+  // useEffect(() => {
+  //   console.log('onEditItem');
+  // }, [onEditItem]);
+  // useEffect(() => {
+  //   console.log('onDeleteItem');
+  // }, [onDeleteItem]);
+
   return (
     <ul css={ListStyles}>
       {items.map(item => (
@@ -30,4 +42,5 @@ ItemsList.propTypes = {
   onDeleteItem: PropTypes.func.isRequired,
 };
 
-export default ItemsList;
+export default memo(ItemsList);
+// export default ItemsList;
