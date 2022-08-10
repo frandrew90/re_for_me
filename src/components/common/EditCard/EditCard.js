@@ -1,54 +1,52 @@
-import React, { Component } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import BigButton from '../BigButton/BigButton';
 import { nanoid } from 'nanoid';
 import s from './EditCard.module.css';
 
-class EditCard extends Component {
-  state = {
-    input: this.props.inputValue,
-  };
+const EditCard = ({ label, onSave, inputValue }) => {
+  const [input, setInput] = useState(inputValue);
 
-  handleChange = e => this.setState({ input: e.target.value });
+  const inputRef = useRef(null);
 
-  handleSubmit = e => {
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  const handleChange = e => setInput(e.target.value);
+
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.onSave(this.state.input);
-    this.reset();
+    onSave(input);
+    reset();
   };
 
-  reset = () => {
-    this.setState({ input: '' });
-  };
+  const reset = () => setInput('');
 
-  inputId = nanoid();
+  const inputId = nanoid();
 
-  render() {
-    const { input } = this.state;
-    const { label } = this.props;
-
-    return (
-      <>
-        <form onSubmit={this.handleSubmit} className={s.form}>
-          <label htmlFor={this.editInputId}>
-            {label}
-            <span className={s.red}>*</span>
-            <input
-              className={s.cityInput}
-              id={this.inputId}
-              type="text"
-              value={input}
-              onChange={this.handleChange}
-            />
-          </label>
-          <div className={s.btnWrapper}>
-            <BigButton type="submit" text={'Save'} disabled={!input} />
-          </div>
-        </form>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <form onSubmit={handleSubmit} className={s.form}>
+        <label htmlFor={inputId}>
+          {label}
+          <span className={s.red}>*</span>
+          <input
+            ref={inputRef}
+            className={s.cityInput}
+            id={inputId}
+            type="text"
+            value={input}
+            onChange={handleChange}
+          />
+        </label>
+        <div className={s.btnWrapper}>
+          <BigButton type="submit" text={'Save'} disabled={!input} />
+        </div>
+      </form>
+    </>
+  );
+};
 
 EditCard.propTypes = {
   label: PropTypes.string.isRequired,

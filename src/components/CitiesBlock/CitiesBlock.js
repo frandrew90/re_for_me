@@ -27,9 +27,11 @@ const ACTION = {
   DELETE: 'delete',
 };
 
+const FILTER_KEY = 'filter';
+
 const CitiesBlock = () => {
   const [cities, setCities] = useState([]);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState(() => storage.get(FILTER_KEY) ?? '');
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [openedModal, setOpenedModal] = useState(ACTION.NONE);
@@ -191,6 +193,10 @@ const CitiesBlock = () => {
   };
 
   //FILTER CITY
+
+  useEffect(() => {
+    storage.save(FILTER_KEY, filter);
+  }, [filter]);
 
   const handleFilterChange = value => setFilter(value);
 
