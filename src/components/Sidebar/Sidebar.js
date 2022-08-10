@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navigation from '../Navigation/Navigation';
+import { navConfig } from '../../data/navigation';
 import './Sidebar.css';
 
 const defineStyles = isOpen => {
@@ -12,13 +13,22 @@ const defineStyles = isOpen => {
 };
 
 const Sidebar = () => {
-  const isOpen = true;
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsOpen(prevIsOpen => !prevIsOpen);
+  };
+
   return (
     // <div className={`Sidebar ${isOpen ? '' : 'Sidebar-closed'}`}>
     <div className={defineStyles(isOpen)}>
       <div className="Sidebar-decor"></div>
-      <button className="toggle-btn" aria-label="Toggle sidebar"></button>
-      <Navigation />
+      <button
+        className="toggle-btn"
+        aria-label="Toggle sidebar"
+        onClick={toggleSidebar}
+      ></button>
+      <Navigation navConfig={navConfig} />
     </div>
   );
 };
