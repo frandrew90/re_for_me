@@ -65,8 +65,6 @@ const CitiesBlock = () => {
     fetchCities();
   }, []);
 
-  console.log(cities);
-
   //ADD CITY
 
   const toggleAddForm = () => {

@@ -1,15 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ToastContainer } from 'react-toastify';
+import { ThemeContext, themes } from '../../context/themeContext';
 import Main from '../Main/Main';
 import Sidebar from '../Sidebar/Sidebar';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
 const App = () => {
+  const [theme, setTheme] = useState(themes.light);
+
+  const toggleTheme = () =>
+    setTheme(prevTheme =>
+      prevTheme === themes.light ? themes.dark : themes.light,
+    );
+
+  console.log(theme);
+
   return (
     <div className="main-container">
-      <Sidebar />
-      <Main />
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <Sidebar />
+        <Main />
+      </ThemeContext.Provider>
 
       <ToastContainer theme="colored" />
     </div>
