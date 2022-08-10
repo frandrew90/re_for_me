@@ -39,7 +39,7 @@ const EditCard = ({ label, onSave, inputValue }) => {
 
   // const inputId = useRef(nanoid());
   const { current: inputId } = useRef(nanoid());
-  console.log(inputId);
+  // console.log(inputId);
 
   return (
     <>
