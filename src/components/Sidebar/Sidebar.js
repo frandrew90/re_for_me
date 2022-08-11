@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
+// import  {  useContext } from 'react';
+import useToggle from '../../hooks/useToggle';
 import Navigation from '../Navigation/Navigation';
 import { navConfig } from '../../data/navigation';
 import './Sidebar.css';
 
-const defineStyles = isOpen => {
+const defineStyles = (isOpen, theme) => {
   const finalStyles = ['Sidebar'];
 
   if (!isOpen) {
@@ -13,11 +15,15 @@ const defineStyles = isOpen => {
 };
 
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  // const { theme } = useContext(ThemeContext);
 
-  const toggleSidebar = () => {
-    setIsOpen(prevIsOpen => !prevIsOpen);
-  };
+  const [isOpen, toggleSidebar] = useToggle(true);
+
+  // const [isOpen, setIsOpen] = useState(true);
+
+  // const toggleSidebar = () => {
+  //   setIsOpen(prevIsOpen => !prevIsOpen);
+  // };
 
   return (
     // <div className={`Sidebar ${isOpen ? '' : 'Sidebar-closed'}`}>

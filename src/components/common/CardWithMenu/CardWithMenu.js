@@ -1,6 +1,7 @@
 // /** @jsxImportSource @emotion/react */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
+import useOutsideClickDetector from '../../../hooks/useOutsideClickDetector';
 import randomIcon from '../../../images/make-group.svg';
 import editIcon from '../../../images/pencil.svg';
 import deleteIcon from '../../../images/bin.svg';
@@ -9,7 +10,11 @@ import s from './CardWithMenu.module.css';
 const CardWithMenu = ({ text, onEdit, onDelete }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const cardRef = useRef(null);
+
   const toggleMenu = () => setIsMenuOpen(prevIsMenuOpen => !prevIsMenuOpen);
+
+  useOutsideClickDetector(cardRef, toggleMenu, isMenuOpen);
 
   const handleEdit = () => {
     onEdit();
@@ -23,7 +28,7 @@ const CardWithMenu = ({ text, onEdit, onDelete }) => {
 
   return (
     <>
-      <div className={s.container}>
+      <div ref={cardRef} className={s.container}>
         <p>{text}</p>
         <button className={s.menuButton} onClick={toggleMenu} aria-label="Menu">
           <img src={randomIcon} alt="Menu" />

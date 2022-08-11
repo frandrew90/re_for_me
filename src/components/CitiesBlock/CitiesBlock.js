@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 // import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import BigButton from '../common/BigButton/BigButton';
@@ -10,7 +10,8 @@ import Filter from '../common/Filter/Filter';
 import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
-import CitiesList from './CitiesList/CitiesList';
+// import CitiesList from './CitiesList/CitiesList';
+import ItemsList from '../common/ItemsList/ItemsList';
 import * as storage from '../../services/localStorage';
 import * as api from '../../services/api';
 import cancelIcon from '../../images/cancel-circle.svg';
@@ -27,7 +28,7 @@ const ACTION = {
   DELETE: 'delete',
 };
 
-const FILTER_KEY = 'filter';
+const FILTER_KEY = 'citiesFilter';
 
 const CitiesBlock = () => {
   const [cities, setCities] = useState([]);
@@ -64,8 +65,6 @@ const CitiesBlock = () => {
 
     fetchCities();
   }, []);
-
-  console.log(cities);
 
   //ADD CITY
 
@@ -112,10 +111,10 @@ const CitiesBlock = () => {
 
   //EDIT CITY
 
-  const handleStartEditting = activeCity => {
+  const handleStartEditting = useCallback(activeCity => {
     setActiveCity(activeCity);
     setOpenedModal(ACTION.EDIT);
-  };
+  }, []);
 
   const confirmEdit = editedCityName => {
     if (editedCityName === activeCity.name) {
@@ -155,10 +154,10 @@ const CitiesBlock = () => {
 
   //DELETE CITY
 
-  const handleStartDeleting = activeCity => {
+  const handleStartDeleting = useCallback(activeCity => {
     setActiveCity(activeCity);
     setOpenedModal(ACTION.DELETE);
-  };
+  }, []);
 
   const confirmDelete = () => setAction(ACTION.DELETE);
 
@@ -200,18 +199,25 @@ const CitiesBlock = () => {
 
   const handleFilterChange = value => setFilter(value);
 
-  const getFilteredCities = () => {
+  const filteredCities = useMemo(() => {
     const normolizedFilter = filter.toLowerCase();
     return cities.filter(city =>
       city.name.toLowerCase().includes(normolizedFilter),
     );
-  };
+  }, [cities, filter]);
+
+  // const getFilteredCities = () => {
+  //   const normolizedFilter = filter.toLowerCase();
+  //   return cities.filter(city =>
+  //     city.name.toLowerCase().includes(normolizedFilter),
+  //   );
+  // };
 
   //RENDER
 
-  const filteredCities = getFilteredCities();
+  // const filteredCities = getFilteredCities();
 
-  const noCities = !firstLoading && !cities.length;
+  const noCities = !firstLoading && !loading && !cities.length;
 
   return (
     <>
@@ -229,10 +235,10 @@ const CitiesBlock = () => {
 
       <div style={{ marginBottom: 32 }}>
         {!!filteredCities.length && (
-          <CitiesList
-            cities={filteredCities}
-            onEditCity={handleStartEditting}
-            onDeleteCity={handleStartDeleting}
+          <ItemsList
+            items={filteredCities}
+            onEditItem={handleStartEditting}
+            onDeleteItem={handleStartDeleting}
           />
         )}
 

@@ -9,6 +9,20 @@ const EditCard = ({ label, onSave, inputValue }) => {
 
   const inputRef = useRef(null);
 
+  // ================================================
+  //   Реализация чистого componentDidUpdate без первого рендера (componentDidMount)
+  // const isFirstRender = useRef(true);
+
+  // useEffect(() => {
+  //   if (isFirstRender.current) {
+  //     isFirstRender.current = false;
+  //     console.log('first');
+  //     return;
+  //   }
+  //   console.log('second');
+  // }, [input]);
+  // ================================================
+
   useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -23,17 +37,23 @@ const EditCard = ({ label, onSave, inputValue }) => {
 
   const reset = () => setInput('');
 
-  const inputId = nanoid();
+  // const inputId = useRef(nanoid());
+  const { current: inputId } = useRef(nanoid());
+  // console.log(inputId);
 
   return (
     <>
       <form onSubmit={handleSubmit} className={s.form}>
-        <label htmlFor={inputId}>
+        <label
+          // htmlFor={inputId.current}
+          htmlFor={inputId}
+        >
           {label}
           <span className={s.red}>*</span>
           <input
             ref={inputRef}
             className={s.cityInput}
+            // id={inputId.current}
             id={inputId}
             type="text"
             value={input}

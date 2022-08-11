@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { toast } from 'react-toastify';
+import { useLocalStorage } from 'react-use';
 // import PropTypes from 'prop-types';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
@@ -7,7 +8,8 @@ import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
 import Filter from '../common/Filter/Filter';
-import FacultyList from './FacultyList/FacultyList';
+// import FacultyList from './FacultyList/FacultyList';
+import ItemsList from '../common/ItemsList/ItemsList';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
 import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
@@ -19,6 +21,8 @@ import deleteIcon from '../../images/bin.svg';
 
 const API_ENDPOINT = 'departments';
 
+const FILTER_KEY = 'facultyFilter';
+
 const ACTION = {
   NONE: 'none',
   ADD: 'add',
@@ -26,231 +30,355 @@ const ACTION = {
   DELETE: 'delete',
 };
 
-class FacultyBlock extends Component {
-  state = {
-    departments: [],
-    // departments: this.props.departments,
-    filter: '',
-    isAddFormOpen: false,
-    openedModal: ACTION.NONE,
-    action: ACTION.NONE,
-    activeDepartment: null,
-    loading: false,
-    error: null,
-    firstLoading: false,
-  };
+const facultyReducer = (state = [], action) => {
+  switch (action.type) {
+    case 'get':
+      return action.payload;
 
-  componentDidMount() {
-    this.setState({ firstLoading: true });
-    this.fetchDepartments().finally(() =>
-      this.setState({ firstLoading: false }),
-    );
+    case 'add':
+      return [...state, action.payload];
+
+    case 'edit':
+      return state.map(department =>
+        department.id === action.payload.id ? action.payload : department,
+      );
+
+    case 'delete':
+      return state.filter(department => department.id !== action.payload);
+
+    default:
+      console.log('Type is not wright');
+      break;
   }
+};
 
-  componentDidUpdate(prevProps, prevState) {
-    const { action } = this.state;
-    if (prevState.action !== action) {
-      switch (action) {
-        case ACTION.ADD:
-          this.addDepartment();
-          break;
-        case ACTION.EDIT:
-          this.editDepartment();
-          break;
-        case ACTION.DELETE:
-          this.deleteDepartment();
-          break;
-        default:
-          return;
-      }
-    }
-  }
-
-  componentWillUnmount() {}
+const FacultyBlock = () => {
+  // const [departments, setDepartments] = useState([]);
+  const [departments, dispatch] = useReducer(facultyReducer, []);
+  // const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useLocalStorage(FILTER_KEY, '');
+  //form/modal
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState(ACTION.NONE);
+  //actions
+  const [action, setAction] = useState(ACTION.NONE);
+  const [activeDepartment, setActiveDepartment] = useState(null);
+  //api request status
+  const [firstLoading, setFirstLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   //GET DEPARTMENTS
 
-  fetchDepartments = async () => {
-    this.setState({ loading: true, error: null });
-    try {
-      const departments = await api.getData(API_ENDPOINT);
-      this.setState({ departments });
-    } catch (error) {
-      this.setState({ error: error.message });
-    } finally {
-      this.setState({ loading: false });
-    }
-  };
+  // useEffect(() => {
+  //   const fetchDepartments = async () => {
+  //     setFirstLoading(true);
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const departments = await api.getData(API_ENDPOINT);
+  //       setDepartments(departments);
+  //     } catch (error) {
+  //       setError(error.message);
+  //     } finally {
+  //       setLoading(false);
+  //       setFirstLoading(false);
+  //     }
+  //   };
+
+  //   fetchDepartments();
+  // }, []);
+
+  //GET DEPARTMENTS with useReduser
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      setFirstLoading(true);
+      setLoading(true);
+      setError(null);
+
+      try {
+        const departments = await api.getData(API_ENDPOINT);
+        dispatch({ type: 'get', payload: departments });
+        // setDepartments(departments);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+        setFirstLoading(false);
+      }
+    };
+
+    fetchDepartments();
+  }, []);
 
   //ADD DEPARTMENT
-  toggleAddForm = () => {
-    this.setState(prevState => ({ isAddFormOpen: !prevState.isAddFormOpen }));
-  };
 
-  // addDepartment = department => {
-  //   const isDublicate = this.checkIfDublicate(department);
-  //   if (isDublicate) {
-  //     alert(`Department ${department} is already in list!`);
-  //     return;
-  //   }
-  //   const newDepartment = { name: department };
-  //   this.setState(prevState => ({
-  //     departments: [...prevState.departments, newDepartment],
-  //     isAddFormOpen: false,
-  //   }));
+  // const toggleAddForm = () => {
+  //   setIsAddFormOpen(prevIsAddFormOpen => !prevIsAddFormOpen);
   // };
 
-  confirmAdd = departmentName => {
-    const isDublicate = this.checkIfDublicate(departmentName);
+  // const confirmAdd = departmentName => {
+  //   const isDublicate = checkIfDublicate(departmentName);
+  //   if (isDublicate) {
+  //     toast.warn(`Faculty ${departmentName} is already in list!`);
+  //     return;
+  //   }
+  //   setActiveDepartment({ name: departmentName });
+  //   setAction(ACTION.ADD);
+  // };
+
+  // const checkIfDublicate = departmentName =>
+  //   departments.some(department => department.name === departmentName);
+
+  // useEffect(() => {
+  //   if (action !== ACTION.ADD) return;
+
+  //   const addDepartment = async () => {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const newDepartment = await api.saveItem(
+  //         API_ENDPOINT,
+  //         activeDepartment,
+  //       );
+  //       setDepartments(prevDepartments => [...prevDepartments, newDepartment]);
+  //       toggleAddForm();
+  //       toast.success(`Faculty ${newDepartment.name} was added`);
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.error(`Somthing went wrong! Error: ${error.message}`);
+  //     } finally {
+  //       setAction(ACTION.NONE);
+  //       setLoading(false);
+  //       setActiveDepartment(null);
+  //     }
+  //   };
+  //   addDepartment();
+  // }, [action, activeDepartment]);
+
+  //ADD DEPARTMENT with useReducer
+
+  const toggleAddForm = () => {
+    setIsAddFormOpen(prevIsAddFormOpen => !prevIsAddFormOpen);
+  };
+
+  const confirmAdd = departmentName => {
+    const isDublicate = checkIfDublicate(departmentName);
     if (isDublicate) {
-      toast.warn(`Department ${departmentName} is already in list!`);
+      toast.warn(`Faculty ${departmentName} is already in list!`);
       return;
     }
-    this.setState({
-      action: ACTION.ADD,
-      activeDepartment: { name: departmentName },
-    });
+    setActiveDepartment({ name: departmentName });
+    setAction(ACTION.ADD);
   };
 
-  checkIfDublicate = departmentName =>
-    this.state.departments.some(({ name }) => name === departmentName);
+  const checkIfDublicate = departmentName =>
+    departments.some(department => department.name === departmentName);
 
-  addDepartment = async () => {
-    this.setState({ loading: true, error: null });
-    const { activeDepartment } = this.state;
-    try {
-      const newDepartment = await api.saveItem(API_ENDPOINT, activeDepartment);
-      this.setState(prevState => ({
-        departments: [...prevState.departments, newDepartment],
-      }));
-      this.toggleAddForm();
-      toast.success(`Faculty of ${newDepartment.name} was added`);
-    } catch (error) {
-      this.setState({ error: error.message });
-      toast.error(`Somthing went wrong! Error: ${error.message}`);
-    } finally {
-      this.setState({
-        activeDepartment: null,
-        action: ACTION.NONE,
-        loading: false,
-      });
-    }
-  };
+  useEffect(() => {
+    if (action !== ACTION.ADD) return;
+
+    const addDepartment = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const newDepartment = await api.saveItem(
+          API_ENDPOINT,
+          activeDepartment,
+        );
+        dispatch({ type: 'add', payload: newDepartment });
+        // setDepartments(prevDepartments => [...prevDepartments, newDepartment]);
+        toggleAddForm();
+        toast.success(`Faculty ${newDepartment.name} was added`);
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Somthing went wrong! Error: ${error.message}`);
+      } finally {
+        setAction(ACTION.NONE);
+        setLoading(false);
+        setActiveDepartment(null);
+      }
+    };
+    addDepartment();
+  }, [action, activeDepartment]);
 
   //EDIT DEPARTMENT
 
-  handleStartEditting = activeDepartment => {
-    this.setState({
-      openedModal: ACTION.EDIT,
-      activeDepartment,
-    });
-  };
+  // const handleStartEditting = useCallback(activeDepartment => {
+  //   setActiveDepartment(activeDepartment);
+  //   setOpenedModal(ACTION.EDIT);
+  // }, []);
 
-  confirmEdit = editDepartmentName => {
-    const { activeDepartment } = this.state;
-    if (editDepartmentName === activeDepartment.name) {
-      // this.setState({ openedModal: ACTION.NONE, activeDepartment: null });
-      this.closeModal();
-      return;
-    }
-    this.setState({
-      action: ACTION.EDIT,
-      activeDepartment: {
-        ...activeDepartment,
-        name: editDepartmentName,
-      },
-    });
-  };
-
-  // editDepartment = editDepartment => {
-  //   this.setState(prevState => ({
-  //     departments: prevState.departments.map(department => {
-  //       if (department.name === prevState.activeDepartment) {
-  //         return { ...department, name: editDepartment };
-  //       }
-  //       return department;
-  //     }),
-  //   }));
-  //   this.closeModal();
+  // const confirmEdit = editDepartmentName => {
+  //   if (editDepartmentName === activeDepartment.name) {
+  //     closeModal();
+  //     return;
+  //   }
+  //   setAction(ACTION.EDIT);
+  //   setActiveDepartment({ ...activeDepartment, name: editDepartmentName });
   // };
 
-  editDepartment = async () => {
-    this.setState({ loading: true, error: null });
-    const { activeDepartment } = this.state;
-    try {
-      const updatedDepartment = await api.editItem(
-        API_ENDPOINT,
-        activeDepartment,
-      );
-      this.setState(prevState => ({
-        departments: prevState.departments.map(depart =>
-          depart.id === updatedDepartment.id ? updatedDepartment : depart,
-        ),
-      }));
-    } catch (error) {
-      this.setState({ error: error.message });
-      toast.error(`Somthing went wrong! Error: ${error.message}`);
-    } finally {
-      this.closeModal();
-      this.setState({
-        // activeDepartment: null,
-        action: ACTION.NONE,
-        loading: false,
-      });
+  // useEffect(() => {
+  //   if (action !== ACTION.EDIT) return;
+
+  //   const editDepartment = async () => {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const updatedDepartment = await api.editItem(
+  //         API_ENDPOINT,
+  //         activeDepartment,
+  //       );
+  //       setDepartments(prevDepartments =>
+  //         prevDepartments.map(department =>
+  //           department.id === updatedDepartment.id
+  //             ? updatedDepartment
+  //             : department,
+  //         ),
+  //       );
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.error(`Somthing went wrong! Error: ${error.message}`);
+  //     } finally {
+  //       setAction(ACTION.NONE);
+  //       closeModal();
+  //       setLoading(false);
+  //       setActiveDepartment(null);
+  //     }
+  //   };
+  //   editDepartment();
+  // }, [action, activeDepartment]);
+
+  //EDIT DEPARTMENT with useReducer
+
+  const handleStartEditting = useCallback(activeDepartment => {
+    setActiveDepartment(activeDepartment);
+    setOpenedModal(ACTION.EDIT);
+  }, []);
+
+  const confirmEdit = editDepartmentName => {
+    if (editDepartmentName === activeDepartment.name) {
+      closeModal();
+      return;
     }
+    setAction(ACTION.EDIT);
+    setActiveDepartment({ ...activeDepartment, name: editDepartmentName });
   };
+
+  useEffect(() => {
+    if (action !== ACTION.EDIT) return;
+
+    const editDepartment = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const updatedDepartment = await api.editItem(
+          API_ENDPOINT,
+          activeDepartment,
+        );
+        dispatch({ type: 'edit', payload: updatedDepartment });
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Somthing went wrong! Error: ${error.message}`);
+      } finally {
+        setAction(ACTION.NONE);
+        closeModal();
+        setLoading(false);
+        setActiveDepartment(null);
+      }
+    };
+    editDepartment();
+  }, [action, activeDepartment]);
 
   //DELETE DEPARTMENT
 
-  handleStartDeleting = activeDepartment => {
-    this.setState({
-      openedModal: ACTION.DELETE,
-      activeDepartment,
-    });
-  };
+  // const handleStartDeleting = useCallback(activeDepartment => {
+  //   setActiveDepartment(activeDepartment);
+  //   setOpenedModal(ACTION.DELETE);
+  // }, []);
 
-  confirmDelete = () => this.setState({ action: ACTION.DELETE });
+  // const confirmDelete = () => setAction(ACTION.DELETE);
 
-  deleteDepartment = async () => {
-    this.setState({ loading: true, error: null });
-    const { activeDepartment } = this.state;
-    try {
-      const deletedDepartment = await api.deleteItem(
-        API_ENDPOINT,
-        activeDepartment.id,
-      );
-      this.setState(prevState => ({
-        departments: prevState.departments.filter(
-          depart => depart.id !== deletedDepartment.id,
-        ),
-      }));
-    } catch (error) {
-      this.setState({ error: error.message });
-      toast.error(`Somthing went wrong! Error: ${error.message}`);
-    } finally {
-      this.closeModal();
-      this.setState({ loading: false, action: ACTION.NONE });
-    }
-  };
+  // useEffect(() => {
+  //   if (action !== ACTION.DELETE) return;
 
-  // deleteDepartment = () => {
-  //   this.setState(prevState => ({
-  //     departments: prevState.departments.filter(
-  //       department => department.name !== prevState.activeDepartment,
-  //     ),
-  //   }));
-  //   this.closeModal();
-  // };
+  //   const deleteDepartment = async () => {
+  //     setLoading(true);
+  //     setError(null);
+  //     try {
+  //       const deletedDepartment = await api.deleteItem(
+  //         API_ENDPOINT,
+  //         activeDepartment.id,
+  //       );
+  //       setDepartments(prevDepartments =>
+  //         prevDepartments.filter(
+  //           department => department.id !== deletedDepartment.id,
+  //         ),
+  //       );
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.error(`Somthing went wrong! Error: ${error.message}`);
+  //     } finally {
+  //       setAction(ACTION.NONE);
+  //       closeModal();
+  //       setLoading(false);
+  //       setActiveDepartment(null);
+  //     }
+  //   };
+  //   deleteDepartment();
+  // }, [action, activeDepartment]);
+
+  //DELETE DEPARTMENT with useReducer
+
+  const handleStartDeleting = useCallback(activeDepartment => {
+    setActiveDepartment(activeDepartment);
+    setOpenedModal(ACTION.DELETE);
+  }, []);
+
+  const confirmDelete = () => setAction(ACTION.DELETE);
+
+  useEffect(() => {
+    if (action !== ACTION.DELETE) return;
+
+    const deleteDepartment = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const deletedDepartment = await api.deleteItem(
+          API_ENDPOINT,
+          activeDepartment.id,
+        );
+        dispatch({ type: 'delete', payload: deletedDepartment.id });
+      } catch (error) {
+        setError(error.message);
+        toast.error(`Somthing went wrong! Error: ${error.message}`);
+      } finally {
+        setAction(ACTION.NONE);
+        closeModal();
+        setLoading(false);
+        setActiveDepartment(null);
+      }
+    };
+    deleteDepartment();
+  }, [action, activeDepartment]);
+  //========
 
   //CLOSE MODAL
-  closeModal = () =>
-    this.setState({ openedModal: ACTION.NONE, activeDepartment: null });
+  const closeModal = () => {
+    setActiveDepartment(null);
+    setOpenedModal(ACTION.NONE);
+  };
 
   //FILTER DEPARTMENT
 
-  handleFilterChange = value => this.setState({ filter: value });
-  getFilteredDepartments = () => {
-    const { departments, filter } = this.state;
+  const handleFilterChange = value => setFilter(value);
+  const getFilteredDepartments = () => {
     const normolizedFilter = filter.toLowerCase();
     return departments.filter(department =>
       department.name.toLowerCase().includes(normolizedFilter),
@@ -258,96 +386,83 @@ class FacultyBlock extends Component {
   };
   // =========================================
 
-  render() {
-    const {
-      departments,
-      isAddFormOpen,
-      openedModal,
-      activeDepartment,
-      loading,
-      error,
-      filter,
-      firstLoading,
-    } = this.state;
+  const filteredDepartments = getFilteredDepartments();
 
-    const filteredDepartments = this.getFilteredDepartments();
+  const noDepartments = !firstLoading && !loading && !departments.length;
 
-    const noDepartments = !firstLoading && !departments.length;
+  return (
+    <div>
+      {loading && <Loader />}
 
-    return (
+      {firstLoading && <Skeleton />}
+
+      {departments.length > 1 && (
+        <Filter
+          label="Find faculty:"
+          value={filter}
+          onFilterChange={handleFilterChange}
+        />
+      )}
+
       <div>
-        {loading && <Loader />}
-
-        {firstLoading && <Skeleton />}
-
-        {departments.length > 1 && (
-          <Filter
-            label="Find faculty:"
-            value={filter}
-            onFilterChange={this.handleFilterChange}
+        {!!filteredDepartments.length && (
+          <ItemsList
+            items={filteredDepartments}
+            onEditItem={handleStartEditting}
+            onDeleteItem={handleStartDeleting}
           />
         )}
 
-        <div>
-          {!!filteredDepartments.length && (
-            <FacultyList
-              departments={filteredDepartments}
-              onEditDepartment={this.handleStartEditting}
-              onDeleteDepartment={this.handleStartDeleting}
-            />
-          )}
+        {noDepartments && <h4> No faculties yet!</h4>}
 
-          {noDepartments && <h4> No faculties yet!</h4>}
-
-          {isAddFormOpen && (
-            <AddForm
-              onSubmit={this.confirmAdd}
-              formName="Adding faculty"
-              placeholder="Faculty"
-            />
-          )}
-
-          {error && <ErrorMsg message={error} />}
-
-          <BigButton
-            text={isAddFormOpen ? 'Cancel adding Faculty' : 'Add Faculty'}
-            icon={isAddFormOpen ? cancelIcon : addIcon}
-            onClickBtn={this.toggleAddForm}
-            disabled={loading}
+        {isAddFormOpen && (
+          <AddForm
+            onSubmit={confirmAdd}
+            formName="Adding faculty"
+            placeholder="Faculty"
           />
-        </div>
-
-        {openedModal === ACTION.EDIT && (
-          <Modal
-            title="Editing the Faculty"
-            onClose={this.closeModal}
-            icon={pencilIcon}
-          >
-            <EditCard
-              label="Faculty"
-              inputValue={activeDepartment.name}
-              onSave={this.confirmEdit}
-            />
-          </Modal>
         )}
 
-        {openedModal === ACTION.DELETE && (
-          <Modal
-            title="Deleting the Faculty"
-            onClose={this.closeModal}
-            icon={deleteIcon}
-          >
-            <DeleteCard
-              text="Are you sure? The faculty will be deleted!"
-              onDelete={this.confirmDelete}
-              onClose={this.closeModal}
-            />
-          </Modal>
-        )}
+        {error && <ErrorMsg message={error} />}
+
+        <BigButton
+          text={isAddFormOpen ? 'Cancel adding Faculty' : 'Add Faculty'}
+          icon={isAddFormOpen ? cancelIcon : addIcon}
+          onClickBtn={toggleAddForm}
+          disabled={loading}
+        />
       </div>
-    );
-  }
-}
+
+      {openedModal === ACTION.EDIT && (
+        <Modal
+          title="Editing the Faculty"
+          onClose={closeModal}
+          icon={pencilIcon}
+        >
+          <EditCard
+            label="Faculty"
+            inputValue={activeDepartment.name}
+            onSave={confirmEdit}
+          />
+        </Modal>
+      )}
+
+      {openedModal === ACTION.DELETE && (
+        <Modal
+          title="Deleting the Faculty"
+          onClose={closeModal}
+          icon={deleteIcon}
+        >
+          <DeleteCard
+            text="Are you sure? The faculty will be deleted!"
+            onDelete={confirmDelete}
+            onClose={closeModal}
+          />
+        </Modal>
+      )}
+    </div>
+  );
+};
 
 export default FacultyBlock;
 
