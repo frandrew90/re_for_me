@@ -28,7 +28,7 @@ const ACTION = {
   DELETE: 'delete',
 };
 
-const FILTER_KEY = 'filter';
+const FILTER_KEY = 'citiesFilter';
 
 const CitiesBlock = () => {
   const [cities, setCities] = useState([]);

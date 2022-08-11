@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { toast } from 'react-toastify';
+import { useLocalStorage } from 'react-use';
 // import PropTypes from 'prop-types';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
@@ -19,6 +20,8 @@ import addIcon from '../../images/plus.svg';
 import deleteIcon from '../../images/bin.svg';
 
 const API_ENDPOINT = 'departments';
+
+const FILTER_KEY = 'facultyFilter';
 
 const ACTION = {
   NONE: 'none',
@@ -52,7 +55,8 @@ const facultyReducer = (state = [], action) => {
 const FacultyBlock = () => {
   // const [departments, setDepartments] = useState([]);
   const [departments, dispatch] = useReducer(facultyReducer, []);
-  const [filter, setFilter] = useState('');
+  // const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useLocalStorage(FILTER_KEY, '');
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [openedModal, setOpenedModal] = useState(ACTION.NONE);

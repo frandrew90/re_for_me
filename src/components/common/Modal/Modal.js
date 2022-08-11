@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useLockBodyScroll } from 'react-use';
 import PropTypes from 'prop-types';
 import s from './Modal.module.css';
 
@@ -40,6 +41,11 @@ const Modal = ({ onClose, icon, title, children }) => {
   // useEffect(() => {
   //   return () => {};
   // }, []);
+
+  //=======================
+  //Blocked bodyScroll
+  useLockBodyScroll(true);
+  //=======================
 
   const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
