@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useDebugValue } from 'react';
 
 const useToggle = (initValue = false) => {
   const [state, setState] = useState(initValue);
@@ -6,6 +6,8 @@ const useToggle = (initValue = false) => {
   const toggleState = () => {
     setState(prevState => !prevState);
   };
+
+  useDebugValue(state ? 'true' : 'false');
 
   return [state, toggleState];
 };
