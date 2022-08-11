@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { toast } from 'react-toastify';
 // import PropTypes from 'prop-types';
 import BigButton from '../common/BigButton/BigButton';
@@ -27,8 +27,31 @@ const ACTION = {
   DELETE: 'delete',
 };
 
+const facultyReducer = (state = [], action) => {
+  switch (action.type) {
+    case 'get':
+      return action.payload;
+
+    case 'add':
+      return [...state, action.payload];
+
+    case 'edit':
+      return state.map(department =>
+        department.id === action.payload.id ? action.payload : department,
+      );
+
+    case 'delete':
+      return state.filter(department => department.id !== action.payload);
+
+    default:
+      console.log('Type is not wright');
+      break;
+  }
+};
+
 const FacultyBlock = () => {
-  const [departments, setDepartments] = useState([]);
+  // const [departments, setDepartments] = useState([]);
+  const [departments, dispatch] = useReducer(facultyReducer, []);
   const [filter, setFilter] = useState('');
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
@@ -43,6 +66,28 @@ const FacultyBlock = () => {
 
   //GET DEPARTMENTS
 
+  // useEffect(() => {
+  //   const fetchDepartments = async () => {
+  //     setFirstLoading(true);
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const departments = await api.getData(API_ENDPOINT);
+  //       setDepartments(departments);
+  //     } catch (error) {
+  //       setError(error.message);
+  //     } finally {
+  //       setLoading(false);
+  //       setFirstLoading(false);
+  //     }
+  //   };
+
+  //   fetchDepartments();
+  // }, []);
+
+  //GET DEPARTMENTS with useReduser
+
   useEffect(() => {
     const fetchDepartments = async () => {
       setFirstLoading(true);
@@ -51,7 +96,8 @@ const FacultyBlock = () => {
 
       try {
         const departments = await api.getData(API_ENDPOINT);
-        setDepartments(departments);
+        dispatch({ type: 'get', payload: departments });
+        // setDepartments(departments);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -63,7 +109,53 @@ const FacultyBlock = () => {
     fetchDepartments();
   }, []);
 
-  //ADD CITY
+  //ADD DEPARTMENT
+
+  // const toggleAddForm = () => {
+  //   setIsAddFormOpen(prevIsAddFormOpen => !prevIsAddFormOpen);
+  // };
+
+  // const confirmAdd = departmentName => {
+  //   const isDublicate = checkIfDublicate(departmentName);
+  //   if (isDublicate) {
+  //     toast.warn(`Faculty ${departmentName} is already in list!`);
+  //     return;
+  //   }
+  //   setActiveDepartment({ name: departmentName });
+  //   setAction(ACTION.ADD);
+  // };
+
+  // const checkIfDublicate = departmentName =>
+  //   departments.some(department => department.name === departmentName);
+
+  // useEffect(() => {
+  //   if (action !== ACTION.ADD) return;
+
+  //   const addDepartment = async () => {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const newDepartment = await api.saveItem(
+  //         API_ENDPOINT,
+  //         activeDepartment,
+  //       );
+  //       setDepartments(prevDepartments => [...prevDepartments, newDepartment]);
+  //       toggleAddForm();
+  //       toast.success(`Faculty ${newDepartment.name} was added`);
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.error(`Somthing went wrong! Error: ${error.message}`);
+  //     } finally {
+  //       setAction(ACTION.NONE);
+  //       setLoading(false);
+  //       setActiveDepartment(null);
+  //     }
+  //   };
+  //   addDepartment();
+  // }, [action, activeDepartment]);
+
+  //ADD DEPARTMENT with useReducer
 
   const toggleAddForm = () => {
     setIsAddFormOpen(prevIsAddFormOpen => !prevIsAddFormOpen);
@@ -94,7 +186,8 @@ const FacultyBlock = () => {
           API_ENDPOINT,
           activeDepartment,
         );
-        setDepartments(prevDepartments => [...prevDepartments, newDepartment]);
+        dispatch({ type: 'add', payload: newDepartment });
+        // setDepartments(prevDepartments => [...prevDepartments, newDepartment]);
         toggleAddForm();
         toast.success(`Faculty ${newDepartment.name} was added`);
       } catch (error) {
@@ -110,6 +203,54 @@ const FacultyBlock = () => {
   }, [action, activeDepartment]);
 
   //EDIT DEPARTMENT
+
+  // const handleStartEditting = useCallback(activeDepartment => {
+  //   setActiveDepartment(activeDepartment);
+  //   setOpenedModal(ACTION.EDIT);
+  // }, []);
+
+  // const confirmEdit = editDepartmentName => {
+  //   if (editDepartmentName === activeDepartment.name) {
+  //     closeModal();
+  //     return;
+  //   }
+  //   setAction(ACTION.EDIT);
+  //   setActiveDepartment({ ...activeDepartment, name: editDepartmentName });
+  // };
+
+  // useEffect(() => {
+  //   if (action !== ACTION.EDIT) return;
+
+  //   const editDepartment = async () => {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     try {
+  //       const updatedDepartment = await api.editItem(
+  //         API_ENDPOINT,
+  //         activeDepartment,
+  //       );
+  //       setDepartments(prevDepartments =>
+  //         prevDepartments.map(department =>
+  //           department.id === updatedDepartment.id
+  //             ? updatedDepartment
+  //             : department,
+  //         ),
+  //       );
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.error(`Somthing went wrong! Error: ${error.message}`);
+  //     } finally {
+  //       setAction(ACTION.NONE);
+  //       closeModal();
+  //       setLoading(false);
+  //       setActiveDepartment(null);
+  //     }
+  //   };
+  //   editDepartment();
+  // }, [action, activeDepartment]);
+
+  //EDIT DEPARTMENT with useReducer
 
   const handleStartEditting = useCallback(activeDepartment => {
     setActiveDepartment(activeDepartment);
@@ -137,13 +278,7 @@ const FacultyBlock = () => {
           API_ENDPOINT,
           activeDepartment,
         );
-        setDepartments(prevDepartments =>
-          prevDepartments.map(department =>
-            department.id === updatedDepartment.id
-              ? updatedDepartment
-              : department,
-          ),
-        );
+        dispatch({ type: 'edit', payload: updatedDepartment });
       } catch (error) {
         setError(error.message);
         toast.error(`Somthing went wrong! Error: ${error.message}`);
@@ -158,6 +293,44 @@ const FacultyBlock = () => {
   }, [action, activeDepartment]);
 
   //DELETE DEPARTMENT
+
+  // const handleStartDeleting = useCallback(activeDepartment => {
+  //   setActiveDepartment(activeDepartment);
+  //   setOpenedModal(ACTION.DELETE);
+  // }, []);
+
+  // const confirmDelete = () => setAction(ACTION.DELETE);
+
+  // useEffect(() => {
+  //   if (action !== ACTION.DELETE) return;
+
+  //   const deleteDepartment = async () => {
+  //     setLoading(true);
+  //     setError(null);
+  //     try {
+  //       const deletedDepartment = await api.deleteItem(
+  //         API_ENDPOINT,
+  //         activeDepartment.id,
+  //       );
+  //       setDepartments(prevDepartments =>
+  //         prevDepartments.filter(
+  //           department => department.id !== deletedDepartment.id,
+  //         ),
+  //       );
+  //     } catch (error) {
+  //       setError(error.message);
+  //       toast.error(`Somthing went wrong! Error: ${error.message}`);
+  //     } finally {
+  //       setAction(ACTION.NONE);
+  //       closeModal();
+  //       setLoading(false);
+  //       setActiveDepartment(null);
+  //     }
+  //   };
+  //   deleteDepartment();
+  // }, [action, activeDepartment]);
+
+  //DELETE DEPARTMENT with useReducer
 
   const handleStartDeleting = useCallback(activeDepartment => {
     setActiveDepartment(activeDepartment);
@@ -177,11 +350,7 @@ const FacultyBlock = () => {
           API_ENDPOINT,
           activeDepartment.id,
         );
-        setDepartments(prevDepartments =>
-          prevDepartments.filter(
-            department => department.id !== deletedDepartment.id,
-          ),
-        );
+        dispatch({ type: 'delete', payload: deletedDepartment.id });
       } catch (error) {
         setError(error.message);
         toast.error(`Somthing went wrong! Error: ${error.message}`);

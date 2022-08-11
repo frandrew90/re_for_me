@@ -17,7 +17,7 @@ const {
   description,
   // tutors,
   cities,
-  department,
+  // department,
 } = universityInfo;
 
 const Main = () => {
@@ -38,7 +38,8 @@ const Main = () => {
       </Section>
 
       <Section icon={facultyIcon} title="Faculties">
-        <FacultyBlock departments={department} />
+        {/* <FacultyBlock departments={department} /> */}
+        <FacultyBlock />
       </Section>
     </main>
   );
