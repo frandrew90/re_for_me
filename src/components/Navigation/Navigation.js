@@ -1,13 +1,21 @@
 import React from 'react';
-// import { navConfig } from '../../data/navigation.js';
+import { HiOutlineLibrary, HiOutlineBeaker } from 'react-icons/hi';
 import NavItem from './NavItem/NavItem.js';
 
 const Navigation = ({ navConfig }) => {
   return (
     <nav style={{ paddingTop: 12 }}>
-      {navConfig.map(navItem => (
-        <NavItem key={navItem.name} name={navItem.name} icon={navItem.icon} />
-      ))}
+      <NavItem
+        name="Faculties "
+        icon={<HiOutlineBeaker color="#ff6b0a" size={24} />}
+        path="/"
+      />
+
+      <NavItem
+        name="University"
+        icon={<HiOutlineLibrary color="#ff6b0a" size={24} />}
+        path="/university"
+      />
     </nav>
   );
 };

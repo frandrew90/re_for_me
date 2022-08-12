@@ -1,32 +1,39 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+
 import PropTypes from 'prop-types';
+import { ThemeContext, themes } from '../../../context/themeContext';
 import './NavItem.scss';
 
-const navItemStyles = isActive => {
-  const finalStyles = ['NavItem'];
+const NavItem = ({ name, icon, path }) => {
+  const { theme } = useContext(ThemeContext);
 
-  if (isActive) {
-    finalStyles.push('NavItemActive');
-  }
-  return finalStyles.join(' ');
-};
-
-const NavItem = ({ name, icon }) => {
-  const isActive = true;
+  const navItemStyles = ['NavItem'];
+  theme === themes.dark && navItemStyles.push('navItemDark');
 
   return (
-    <div className={navItemStyles(isActive)}>
-      <span className="icon-Wrapper">{icon}</span>
-      <a className="itemName" href="/">
-        {name}
-      </a>
-    </div>
+    <NavLink
+      to={path}
+      className={navItemStyles.join(' ')}
+      activeClassName="NavItemActive"
+      exact
+    >
+      <span className="iconWrapper">{icon}</span>
+      <span className="itemName">{name}</span>
+    </NavLink>
   );
+  // return (
+  //   <a href="/" className={navItemStyles.join(' ')}>
+  //     <span className="iconWrapper">{icon}</span>
+  //     <span className="itemName">{name}</span>
+  //   </a>
+  // );
 };
 
 export default NavItem;
 
 NavItem.propTypes = {
   name: PropTypes.string.isRequired,
-  icon: PropTypes.object,
+  icon: PropTypes.object.isRequired,
+  path: PropTypes.string.isRequired,
 };
