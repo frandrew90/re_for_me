@@ -410,6 +410,7 @@ const FacultyBlock = () => {
             items={filteredDepartments}
             onEditItem={handleStartEditting}
             onDeleteItem={handleStartDeleting}
+            link="faculties"
           />
         )}
 

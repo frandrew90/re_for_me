@@ -1,0 +1,27 @@
+.wrapper {
+  margin-bottom: 18px;
+}
+
+.nav {
+  margin-bottom: 18px;
+  background-color: #161d2a;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.linkWrapper {
+  margin-left: 32px;
+}
+.link {
+  display: inline-block;
+  padding: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #bdbdbd;
+}
+
+.activeLink {
+  /* color: #dfdfdf; */
+  color: #ff6b0a;
+}

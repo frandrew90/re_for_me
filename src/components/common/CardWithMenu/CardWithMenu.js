@@ -1,5 +1,6 @@
 // /** @jsxImportSource @emotion/react */
 import React, { useState, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import useOutsideClickDetector from '../../../hooks/useOutsideClickDetector';
 import randomIcon from '../../../images/make-group.svg';
@@ -7,8 +8,9 @@ import editIcon from '../../../images/pencil.svg';
 import deleteIcon from '../../../images/bin.svg';
 import s from './CardWithMenu.module.css';
 
-const CardWithMenu = ({ text, onEdit, onDelete }) => {
+const CardWithMenu = ({ item, onEdit, onDelete, link }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const cardRef = useRef(null);
 
@@ -29,7 +31,19 @@ const CardWithMenu = ({ text, onEdit, onDelete }) => {
   return (
     <>
       <div ref={cardRef} className={s.container}>
-        <p>{text}</p>
+        {link && (
+          <Link
+            to={{
+              pathname: `/${link}/${item.id}`,
+              state: { from: location, label: 'Go back to University' },
+            }}
+          >
+            <p>{item.name}</p>
+          </Link>
+        )}
+
+        {!link && <p>{item.name}</p>}
+
         <button className={s.menuButton} onClick={toggleMenu} aria-label="Menu">
           <img src={randomIcon} alt="Menu" />
         </button>
@@ -57,7 +71,7 @@ const CardWithMenu = ({ text, onEdit, onDelete }) => {
 };
 
 CardWithMenu.propTypes = {
-  text: PropTypes.string.isRequired,
+  item: PropTypes.object.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
