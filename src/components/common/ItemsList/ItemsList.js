@@ -6,7 +6,7 @@ import Paper from '../Paper/Paper';
 import CardWithMenu from '../CardWithMenu/CardWithMenu';
 import { ListStyles } from '../../../styles/listStyles';
 
-const ItemsList = ({ items, onEditItem, onDeleteItem }) => {
+const ItemsList = ({ items, onEditItem, onDeleteItem, link }) => {
   // console.log('itemsList');
 
   // useEffect(() => {
@@ -25,9 +25,10 @@ const ItemsList = ({ items, onEditItem, onDeleteItem }) => {
         <li key={item.id}>
           <Paper>
             <CardWithMenu
-              text={item.name}
+              item={item}
               onEdit={() => onEditItem(item)}
               onDelete={() => onDeleteItem(item)}
+              link={link}
             />
           </Paper>
         </li>
