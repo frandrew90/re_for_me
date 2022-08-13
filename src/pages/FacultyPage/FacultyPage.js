@@ -37,14 +37,17 @@ const FacultyPage = () => {
       api
         .getData(`${API_ENDPOINT}/${id}`) //добавить id
         .then(setDepartment)
-        .catch(err => toast.error('Faculty is not found'));
+        .catch(err => {
+          toast.error('Faculty is not found');
+          history.replace('/faculties');
+        });
     };
     fetchDepartment();
-  }, [id]);
+  }, [history, id]);
 
   const handleGoBack = () => {
     // history.goBack();
-    history.push(location.state.from);
+    history.push(location.state?.from ?? '/faculties');
   };
 
   return (
@@ -52,7 +55,11 @@ const FacultyPage = () => {
       <Header title={department.name ?? 'Faculty'} />
 
       <div className={s.wrapper}>
-        <BigButton text="Go Back" onClickBtn={handleGoBack} isGray />
+        <BigButton
+          text={location.state?.label ?? 'Go back'}
+          onClickBtn={handleGoBack}
+          isGray
+        />
       </div>
 
       <nav className={s.nav}>
@@ -62,7 +69,8 @@ const FacultyPage = () => {
             to={{
               pathname: `${match.url}/description`,
               state: {
-                from: location.state.from,
+                from: location.state?.from,
+                label: location.state?.label,
               },
             }}
             className={s.link}
@@ -78,7 +86,8 @@ const FacultyPage = () => {
             to={{
               pathname: `${match.url}/history`,
               state: {
-                from: location.state.from,
+                from: location.state?.from,
+                label: location.state?.label,
               },
             }}
             className={s.link}

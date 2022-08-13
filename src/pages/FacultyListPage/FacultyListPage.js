@@ -40,6 +40,7 @@ const FacultyListPage = () => {
                   pathname: `${match.url}/${id}`,
                   state: {
                     from: location,
+                    label: ' Go back to Faculties',
                   },
                 }}
               >
