@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
   useParams,
   Switch,
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import Paper from '../../components/common/Paper/Paper';
 import BigButton from '../../components/common/BigButton/BigButton';
 import Header from '../../components/Header/Header';
+import Loader from '../../components/common/Loader/Loader';
 import * as api from '../../services/api';
 import s from './FacultyPage.module.css';
 
@@ -98,30 +99,34 @@ const FacultyPage = () => {
         </div>
       </nav>
 
-      <Switch>
-        <Route path={`${match.path}/description`}>
-          <Paper>
-            <p className={s.text}>
-              Description Lorem ipsum dolor sit amet consectetur adipisicing
-              elit. Quisquam reprehenderit pariatur ipsam sed qui consectetur
-              labore enim suscipit hic explicabo vero ut tenetur ipsa, odit
-              minima, at saepe error voluptatibus quam rem ab vel facilis
-              placeat! Laudantium amet sed enim quisquam saepe assumenda fugiat
-              quae maxime? Atque id assumenda minima.
-            </p>
-          </Paper>
-        </Route>
-        <Route path={`${match.path}/history`}>
-          <Paper>
-            <p className={s.text}>
-              History Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Minima minus consequatur in dolores et deserunt vel. Reiciendis
-              voluptatibus dignissimos quasi eveniet expedita ipsam aliquam
-              atque. Aperiam commodi cupiditate id deleniti!
-            </p>
-          </Paper>
-        </Route>
-      </Switch>
+      <Suspense fallback={<Loader />}>
+        <Switch>
+          <Route path={`${match.path}/description`}>
+            <Paper>
+              {/* <p> Заменить на полноценный компонент Page и сделать динамический импорт - lazy как в main*/}
+              <p className={s.text}>
+                Description Lorem ipsum dolor sit amet consectetur adipisicing
+                elit. Quisquam reprehenderit pariatur ipsam sed qui consectetur
+                labore enim suscipit hic explicabo vero ut tenetur ipsa, odit
+                minima, at saepe error voluptatibus quam rem ab vel facilis
+                placeat! Laudantium amet sed enim quisquam saepe assumenda
+                fugiat quae maxime? Atque id assumenda minima.
+              </p>
+            </Paper>
+          </Route>
+          <Route path={`${match.path}/history`}>
+            <Paper>
+              {/* <p> Заменить на полноценный компонент Page и сделать динамический импорт - lazy как в main*/}
+              <p className={s.text}>
+                History Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Minima minus consequatur in dolores et deserunt vel. Reiciendis
+                voluptatibus dignissimos quasi eveniet expedita ipsam aliquam
+                atque. Aperiam commodi cupiditate id deleniti!
+              </p>
+            </Paper>
+          </Route>
+        </Switch>
+      </Suspense>
     </>
   );
 };
