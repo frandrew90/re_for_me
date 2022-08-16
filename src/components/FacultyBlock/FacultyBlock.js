@@ -384,6 +384,12 @@ const FacultyBlock = () => {
       department.name.toLowerCase().includes(normolizedFilter),
     );
   };
+
+  useEffect(() => {
+    if (departments.length === 1) {
+      setFilter('');
+    }
+  }, [departments.length, setFilter]);
   // =========================================
 
   const filteredDepartments = getFilteredDepartments();
