@@ -7,6 +7,7 @@ import {
   useRouteMatch,
   useHistory,
   useLocation,
+  Redirect,
 } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Paper from '../../components/common/Paper/Paper';
@@ -76,6 +77,14 @@ const FacultyPage = () => {
             }}
             className={s.link}
             activeClassName={s.activeLink}
+            isActive={(matchRoute, location) => {
+              // console.log('match', matchRoute);
+              // console.log('match.url', match.url);
+              // console.log('location', location);
+              if (matchRoute?.isExact || location.pathname === match.url) {
+                return true;
+              }
+            }}
           >
             Description
           </NavLink>
@@ -101,7 +110,7 @@ const FacultyPage = () => {
 
       <Suspense fallback={<Loader />}>
         <Switch>
-          <Route path={`${match.path}/description`}>
+          <Route exact path={[match.path, `${match.path}/description`]}>
             <Paper>
               {/* <p> Заменить на полноценный компонент Page и сделать динамический импорт - lazy как в main*/}
               <p className={s.text}>
@@ -114,7 +123,7 @@ const FacultyPage = () => {
               </p>
             </Paper>
           </Route>
-          <Route path={`${match.path}/history`}>
+          <Route exact path={`${match.path}/history`}>
             <Paper>
               {/* <p> Заменить на полноценный компонент Page и сделать динамический импорт - lazy как в main*/}
               <p className={s.text}>
@@ -125,6 +134,8 @@ const FacultyPage = () => {
               </p>
             </Paper>
           </Route>
+
+          <Route render={() => <Redirect to={match.url} />} />
         </Switch>
       </Suspense>
     </>
