@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 
-import React, { useEffect, useState } from 'react';
-import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
+import React, { useEffect, useState, useCallback } from 'react';
+import { connect } from 'react-redux';
 
-// import PropTypes from 'prop-types';
+import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
 import Tutor from './Tutor/Tutor';
 import BigButton from '../common/BigButton/BigButton';
 import Paper from '../common/Paper/Paper';
@@ -11,15 +11,16 @@ import TutorForm from './TutorForm/TutorForm';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
 import * as api from '../../services/api';
+import { setTutors } from '../../redux/tutors/tutorsActions';
 import addIcon from '../../images/plus.svg';
 import cancelIcon from '../../images/cancel-circle.svg';
 
 const API_ENDPOINT = 'tutors';
 
-const TutorsBlock = () => {
-  const [tutors, setTutors] = useState([]);
+const TutorsBlock = ({ tutors, onSetTutors }) => {
+  // const [tutors, setTutors] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [newTutor, setNewTutor] = useState(null);
+  // const [newTutor, setNewTutor] = useState(null);
   // api request status
   const [firstLoading, setFirstLoading] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -34,8 +35,8 @@ const TutorsBlock = () => {
 
       try {
         const tutors = await api.getData(API_ENDPOINT);
-        setTutors(tutors);
-        // console.log(tutors);
+        // setTutors(tutors);
+        onSetTutors(tutors);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -45,29 +46,33 @@ const TutorsBlock = () => {
     };
 
     fetchTutors();
-  }, []);
+  }, [onSetTutors]);
 
-  //ADD TUTOR
+  // ==================================
+  // Removed to tutorsForm component
+  // //ADD TUTOR
 
-  useEffect(() => {
-    if (!newTutor) return;
+  // useEffect(() => {
+  //   if (!newTutor) return;
 
-    const addTutor = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const savedTutor = await api.saveItem(API_ENDPOINT, newTutor);
-        setTutors(prevTutors => [...prevTutors, savedTutor]);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-        setIsFormOpen(false);
-        setNewTutor(null);
-      }
-    };
-    addTutor();
-  }, [newTutor]);
+  //   const addTutor = async () => {
+  //     setLoading(true);
+  //     setError(null);
+  //     try {
+  //       const savedTutor = await api.saveItem(API_ENDPOINT, newTutor);
+  //       setTutors(prevTutors => [...prevTutors, savedTutor]);
+  //     } catch (error) {
+  //       setError(error.message);
+  //     } finally {
+  //       setLoading(false);
+  //       setIsFormOpen(false);
+  //       setNewTutor(null);
+  //     }
+  //   };
+  //   addTutor();
+  // }, [newTutor]);
+
+  // ==================================
 
   // //FETCH TUTORS with abortcontroller
 
@@ -134,9 +139,9 @@ const TutorsBlock = () => {
   //   };
   // }, [newTutor]);
 
-  const toggleForm = () => {
+  const toggleForm = useCallback(() => {
     setIsFormOpen(prevIsFormOpen => !prevIsFormOpen);
-  };
+  }, []);
 
   const noTutors = !firstLoading && !tutors.length;
 
@@ -160,7 +165,7 @@ const TutorsBlock = () => {
 
       {noTutors && <h4> No tutors yet!</h4>}
 
-      {isFormOpen && <TutorForm onSubmit={setNewTutor} />}
+      {isFormOpen && <TutorForm closeForm={toggleForm} />}
 
       {error && <ErrorMsg message={error} />}
 
@@ -174,4 +179,20 @@ const TutorsBlock = () => {
   );
 };
 
-export default TutorsBlock;
+// Универсальный способ связать РЕДАКС с компонентом
+//(в классовых компонентах но также работает в функциональных):
+
+//Получаем состояние
+const mapStateToProps = state => ({
+  tutors: state.tutors,
+});
+
+//Получаем методы для изменения состояняя:
+const mapDispatchToProps = dispatch => ({
+  onSetTutors: tutors => dispatch(setTutors(tutors)),
+});
+
+// const connectTutors = connect(mapStateToProps, mapDispatchToProps);
+// export default connectTutors(TutorsBlock);
+
+export default connect(mapStateToProps, mapDispatchToProps)(TutorsBlock);

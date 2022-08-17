@@ -12,7 +12,7 @@ const defineStyles = (isOpen, theme) => {
   if (!isOpen) {
     finalStyles.push('Sidebar-closed');
   }
-  console.log(theme);
+  // console.log(theme);
   if (theme === 'dark') {
     finalStyles.push('Sidebar-dark');
   }
