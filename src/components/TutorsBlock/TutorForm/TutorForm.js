@@ -1,7 +1,12 @@
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
 import BigButton from '../../common/BigButton/BigButton';
+import Loader from '../../common/Loader/Loader';
+import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
 import Paper from '../../common/Paper/Paper';
+import * as api from '../../../services/api';
+import { addTutor } from '../../../redux/tutors/tutorsActions';
 import s from './TutorForm.module.css';
 
 const citiesOptions = [
@@ -28,7 +33,9 @@ const GENDER = {
   FEMALE: 'female',
 };
 
-const TutorForm = ({ onSubmit }) => {
+const API_ENDPOINT = 'tutors';
+
+const TutorForm = ({ closeForm, onAddTutor }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [patronymic, setPatronymic] = useState('');
@@ -38,10 +45,15 @@ const TutorForm = ({ onSubmit }) => {
   const [city, setCity] = useState('');
   const [options, setOptions] = useState('');
   const [isFullTime, setIsFullTime] = useState(false);
+  // with Redux
+  // api request status
+  const [newTutor, setNewTutor] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit({
+    setNewTutor({
       firstName,
       lastName,
       patronymic,
@@ -52,6 +64,17 @@ const TutorForm = ({ onSubmit }) => {
       options,
       isFullTime,
     });
+    // onSubmit({
+    //   firstName,
+    //   lastName,
+    //   patronymic,
+    //   gender,
+    //   phone,
+    //   email,
+    //   city,
+    //   options,
+    //   isFullTime,
+    // });
     reset();
   };
 
@@ -67,6 +90,29 @@ const TutorForm = ({ onSubmit }) => {
     setIsFullTime(false);
   };
 
+  //ADD TUTOR
+
+  useEffect(() => {
+    if (!newTutor) return;
+
+    const addTutor = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const savedTutor = await api.saveItem(API_ENDPOINT, newTutor);
+        onAddTutor(savedTutor);
+        // setTutors(prevTutors => [...prevTutors, savedTutor]);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+        closeForm();
+        setNewTutor(null);
+      }
+    };
+    addTutor();
+  }, [closeForm, newTutor, onAddTutor]);
+
   const requiredValues = [
     firstName,
     lastName,
@@ -81,6 +127,7 @@ const TutorForm = ({ onSubmit }) => {
 
   return (
     <div className={s.container}>
+      {loading && <Loader />}
       <Paper>
         <div className={s.inner}>
           <h4 className="formName">Add Tutor</h4>
@@ -183,6 +230,8 @@ const TutorForm = ({ onSubmit }) => {
               />
             </div>
 
+            {error && <ErrorMsg message={error} />}
+
             <BigButton
               type="submit"
               text="Invite"
@@ -196,7 +245,11 @@ const TutorForm = ({ onSubmit }) => {
 };
 
 TutorForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  closeForm: PropTypes.func.isRequired,
 };
 
-export default TutorForm;
+const mapDispatchToProps = dispatch => ({
+  onAddTutor: tutor => dispatch(addTutor(tutor)),
+});
+
+export default connect(null, mapDispatchToProps)(TutorForm);

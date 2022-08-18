@@ -1,8 +1,9 @@
 // import React, { useState } from 'react';
-// import  {  useContext } from 'react';
+import { useContext } from 'react';
 import useToggle from '../../hooks/useToggle';
 import Navigation from '../Navigation/Navigation';
 import { navConfig } from '../../data/navigation';
+import { ThemeContext } from '../../context/themeContext';
 import './Sidebar.css';
 
 const defineStyles = (isOpen, theme) => {
@@ -11,11 +12,15 @@ const defineStyles = (isOpen, theme) => {
   if (!isOpen) {
     finalStyles.push('Sidebar-closed');
   }
+  // console.log(theme);
+  if (theme === 'dark') {
+    finalStyles.push('Sidebar-dark');
+  }
   return finalStyles.join(' ');
 };
 
 const Sidebar = () => {
-  // const { theme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const [isOpen, toggleSidebar] = useToggle(true);
 
@@ -27,7 +32,7 @@ const Sidebar = () => {
 
   return (
     // <div className={`Sidebar ${isOpen ? '' : 'Sidebar-closed'}`}>
-    <div className={defineStyles(isOpen)}>
+    <div className={defineStyles(isOpen, theme)}>
       <div className="Sidebar-decor"></div>
       <button
         className="toggle-btn"
