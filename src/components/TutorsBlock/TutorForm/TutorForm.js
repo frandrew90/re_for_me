@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import BigButton from '../../common/BigButton/BigButton';
+import Loader from '../../common/Loader/Loader';
+import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
 import Paper from '../../common/Paper/Paper';
 import * as api from '../../../services/api';
 import { addTutor } from '../../../redux/tutors/tutorsActions';
@@ -125,6 +127,7 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
 
   return (
     <div className={s.container}>
+      {loading && <Loader />}
       <Paper>
         <div className={s.inner}>
           <h4 className="formName">Add Tutor</h4>
@@ -226,6 +229,8 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
                 onChange={e => setIsFullTime(e.target.checked)}
               />
             </div>
+
+            {error && <ErrorMsg message={error} />}
 
             <BigButton
               type="submit"

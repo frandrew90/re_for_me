@@ -1,39 +1,21 @@
 import { combineReducers } from 'redux';
-
-// State:
-// {
-//     tutors: [],
-//     cities: {
-//         items: [],
-//         filter:'',
-//         },
-//     departments:[]
-// }
-// CitiesState:
-// {
-//     cities: {
-//         items: [],
-//         filter:'',
-//         },
-// }
-
-// action = {type: 'action/type', payload:'data'}
+import TYPES from './citiesTypes';
 
 const itemsReducer = (state = [], action) => {
   switch (action.type) {
-    case 'cities/items_set':
+    case TYPES.SET:
       return action.payload;
 
-    case 'cities/items_add':
+    case TYPES.ADD:
       return [...state, action.payload];
 
-    case 'cities/items_edit':
+    case TYPES.EDIT:
       return state.map(city =>
         city.id === action.payload.id ? action.payload : city,
       );
 
-    case 'cities/items_delete':
-      return state.filter(city => city.id !== action.payload.id);
+    case TYPES.REMOVE:
+      return state.filter(city => city.id !== action.payload);
 
     default:
       return state;
@@ -42,7 +24,7 @@ const itemsReducer = (state = [], action) => {
 
 const filterReducer = (state = '', action) => {
   switch (action.type) {
-    case 'cities/filter_change':
+    case TYPES.FILTER:
       return action.payload;
 
     default:

@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 // import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
+import { useSelector, useDispatch } from 'react-redux';
+import * as actions from '../../redux/cities/citiesActions';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
@@ -12,7 +14,7 @@ import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
 // import CitiesList from './CitiesList/CitiesList';
 import ItemsList from '../common/ItemsList/ItemsList';
-import * as storage from '../../services/localStorage';
+// import * as storage from '../../services/localStorage';
 import * as api from '../../services/api';
 import cancelIcon from '../../images/cancel-circle.svg';
 import pencilIcon from '../../images/pencil.svg';
@@ -28,11 +30,14 @@ const ACTION = {
   DELETE: 'delete',
 };
 
-const FILTER_KEY = 'citiesFilter';
+// const FILTER_KEY = 'citiesFilter';
 
 const CitiesBlock = () => {
-  const [cities, setCities] = useState([]);
-  const [filter, setFilter] = useState(() => storage.get(FILTER_KEY) ?? '');
+  const cities = useSelector(state => state.cities.items);
+  const filter = useSelector(state => state.cities.filter);
+  const dispatch = useDispatch();
+  // const [cities, setCities] = useState([]);
+  // const [filter, setFilter] = useState(() => storage.get(FILTER_KEY) ?? '');
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [openedModal, setOpenedModal] = useState(ACTION.NONE);
@@ -54,7 +59,8 @@ const CitiesBlock = () => {
 
       try {
         const cities = await api.getData(API_ENDPOINT);
-        setCities(cities);
+        // setCities(cities);
+        dispatch(actions.setCities(cities));
       } catch (error) {
         setError(error.message);
       } finally {
@@ -64,7 +70,7 @@ const CitiesBlock = () => {
     };
 
     fetchCities();
-  }, []);
+  }, [dispatch]);
 
   //ADD CITY
 
@@ -94,7 +100,8 @@ const CitiesBlock = () => {
 
       try {
         const newCity = await api.saveItem(API_ENDPOINT, activeCity);
-        setCities(prevCities => [...prevCities, newCity]);
+        // setCities(prevCities => [...prevCities, newCity]);
+        dispatch(actions.addCity(newCity));
         toggleAddForm();
         toast.success(`City ${newCity.name} was added`);
       } catch (error) {
@@ -107,7 +114,7 @@ const CitiesBlock = () => {
       }
     };
     addCity();
-  }, [action, activeCity]);
+  }, [action, activeCity, dispatch]);
 
   //EDIT CITY
 
@@ -134,11 +141,12 @@ const CitiesBlock = () => {
 
       try {
         const updatedCity = await api.editItem(API_ENDPOINT, activeCity);
-        setCities(prevCities =>
-          prevCities.map(city =>
-            city.id === updatedCity.id ? updatedCity : city,
-          ),
-        );
+        // setCities(prevCities =>
+        //   prevCities.map(city =>
+        //     city.id === updatedCity.id ? updatedCity : city,
+        //   ),
+        // );
+        dispatch(actions.editCity(updatedCity));
       } catch (error) {
         setError(error.message);
         toast.error(`Somthing went wrong! Error: ${error.message}`);
@@ -150,7 +158,7 @@ const CitiesBlock = () => {
       }
     };
     editCity();
-  }, [action, activeCity]);
+  }, [action, activeCity, dispatch]);
 
   //DELETE CITY
 
@@ -169,9 +177,10 @@ const CitiesBlock = () => {
       setError(null);
       try {
         const deletedCity = await api.deleteItem(API_ENDPOINT, activeCity.id);
-        setCities(prevCities =>
-          prevCities.filter(city => city.id !== deletedCity.id),
-        );
+        // setCities(prevCities =>
+        //   prevCities.filter(city => city.id !== deletedCity.id),
+        // );
+        dispatch(actions.deleteCity(deletedCity.id));
       } catch (error) {
         setError(error.message);
         toast.error(`Somthing went wrong! Error: ${error.message}`);
@@ -183,7 +192,7 @@ const CitiesBlock = () => {
       }
     };
     deleteCity();
-  }, [action, activeCity]);
+  }, [action, activeCity, dispatch]);
 
   //CLOSE MODAL
   const closeModal = () => {
@@ -193,11 +202,11 @@ const CitiesBlock = () => {
 
   //FILTER CITY
 
-  useEffect(() => {
-    storage.save(FILTER_KEY, filter);
-  }, [filter]);
+  // useEffect(() => {
+  //   storage.save(FILTER_KEY, filter);
+  // }, [filter]);
 
-  const handleFilterChange = value => setFilter(value);
+  // const handleFilterChange = value => setFilter(value);
 
   const filteredCities = useMemo(() => {
     const normolizedFilter = filter.toLowerCase();
@@ -219,11 +228,13 @@ const CitiesBlock = () => {
 
   const noCities = !firstLoading && !loading && !cities.length;
 
+  //FIX FILTER BUG
   useEffect(() => {
     if (cities.length === 1) {
-      setFilter('');
+      // setFilter('');
+      dispatch(actions.changeFilter(''));
     }
-  }, [cities.length, setFilter]);
+  }, [cities.length, dispatch]);
 
   return (
     <>
@@ -234,8 +245,8 @@ const CitiesBlock = () => {
       {cities.length > 1 && (
         <Filter
           label="Find city:"
-          value={filter}
-          onFilterChange={handleFilterChange}
+          // value={filter}
+          // onFilterChange={handleFilterChange}
         />
       )}
 

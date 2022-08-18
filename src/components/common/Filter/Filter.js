@@ -1,10 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { useContext } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { ThemeContext, themes } from '../../../context/themeContext';
+import { changeFilter } from '../../../redux/cities/citiesActions';
 import s from './Filter.module.css';
 
 const Filter = ({ label = '', onFilterChange, value }) => {
+  const filter = useSelector(state => state.cities.filter);
+  const dispatch = useDispatch();
+
   const { theme } = useContext(ThemeContext);
   return (
     <div className={s.container}>
@@ -12,8 +17,10 @@ const Filter = ({ label = '', onFilterChange, value }) => {
         {label}
         <input
           type="text"
-          value={value}
-          onChange={e => onFilterChange(e.target.value)}
+          // value={value}
+          value={filter}
+          onChange={e => dispatch(changeFilter(e.target.value))}
+          // onChange={e => onFilterChange(e.target.value)}
           className={
             theme === themes.light
               ? s.filterInput
@@ -25,10 +32,10 @@ const Filter = ({ label = '', onFilterChange, value }) => {
   );
 };
 
-Filter.propTypes = {
-  label: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  onFilterChange: PropTypes.func.isRequired,
-};
+// Filter.propTypes = {
+//   label: PropTypes.string,
+//   value: PropTypes.string.isRequired,
+//   onFilterChange: PropTypes.func.isRequired,
+// };
 
 export default Filter;

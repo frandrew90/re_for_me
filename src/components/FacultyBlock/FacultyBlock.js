@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { toast } from 'react-toastify';
-import { useLocalStorage } from 'react-use';
+// import { useLocalStorage } from 'react-use';
 // import PropTypes from 'prop-types';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
 import DeleteCard from '../common/DeleteCard/DeleteCard';
 import AddForm from '../common/AddForm/AddForm';
-import Filter from '../common/Filter/Filter';
+// import Filter from '../common/Filter/Filter';
 // import FacultyList from './FacultyList/FacultyList';
 import ItemsList from '../common/ItemsList/ItemsList';
 import Loader from '../common/Loader/Loader';
@@ -21,7 +21,7 @@ import deleteIcon from '../../images/bin.svg';
 
 const API_ENDPOINT = 'departments';
 
-const FILTER_KEY = 'facultyFilter';
+// const FILTER_KEY = 'facultyFilter';
 
 const ACTION = {
   NONE: 'none',
@@ -56,7 +56,10 @@ const FacultyBlock = () => {
   // const [departments, setDepartments] = useState([]);
   const [departments, dispatch] = useReducer(facultyReducer, []);
   // const [filter, setFilter] = useState('');
-  const [filter, setFilter] = useLocalStorage(FILTER_KEY, '');
+  //========
+  // Переделать фильтер под универсальный компонент, сейчас он привязан к citiesBlock
+  // const [filter, setFilter] = useLocalStorage(FILTER_KEY, '');
+  //=======
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [openedModal, setOpenedModal] = useState(ACTION.NONE);
@@ -377,22 +380,26 @@ const FacultyBlock = () => {
 
   //FILTER DEPARTMENT
 
-  const handleFilterChange = value => setFilter(value);
-  const getFilteredDepartments = () => {
-    const normolizedFilter = filter.toLowerCase();
-    return departments.filter(department =>
-      department.name.toLowerCase().includes(normolizedFilter),
-    );
-  };
+  //========
+  // Переделать фильтер под универсальный компонент, сейчас он привязан к citiesBlock
 
-  useEffect(() => {
-    if (departments.length === 1) {
-      setFilter('');
-    }
-  }, [departments.length, setFilter]);
-  // =========================================
+  // const handleFilterChange = value => setFilter(value);
+  // const getFilteredDepartments = () => {
+  //   const normolizedFilter = filter.toLowerCase();
+  //   return departments.filter(department =>
+  //     department.name.toLowerCase().includes(normolizedFilter),
+  //   );
+  // };
 
-  const filteredDepartments = getFilteredDepartments();
+  // useEffect(() => {
+  //   if (departments.length === 1) {
+  //     setFilter('');
+  //   }
+  // }, [departments.length, setFilter]);
+  // // =========================================
+
+  // const filteredDepartments = getFilteredDepartments();
+  //=======
 
   const noDepartments = !firstLoading && !loading && !departments.length;
 
@@ -402,18 +409,20 @@ const FacultyBlock = () => {
 
       {firstLoading && <Skeleton />}
 
-      {departments.length > 1 && (
+      {/* {departments.length > 1 && (
         <Filter
           label="Find faculty:"
           value={filter}
           onFilterChange={handleFilterChange}
         />
-      )}
+      )} */}
 
       <div>
-        {!!filteredDepartments.length && (
+        {/* {!!filteredDepartments.length && ( */}
+        {!!departments.length && (
           <ItemsList
-            items={filteredDepartments}
+            items={departments}
+            // items={filteredDepartments}
             onEditItem={handleStartEditting}
             onDeleteItem={handleStartDeleting}
             link="faculties"
