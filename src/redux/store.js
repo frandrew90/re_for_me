@@ -3,8 +3,6 @@ import { devToolsEnhancer } from 'redux-devtools-extension';
 import citiesReducer from './cities/citiesReducer';
 import tutorsReducer from './tutors/tutorsReducer';
 
-// console.log(citiesReducer);
-
 const rootReducer = combineReducers({
   tutors: tutorsReducer,
   cities: citiesReducer,
