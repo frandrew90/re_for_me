@@ -2,7 +2,8 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 // import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-import * as actions from '../../redux/cities/citiesActions';
+import { citiesActions } from '../../redux/cities';
+// import * as actions from '../../redux/cities/citiesActions';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
@@ -60,7 +61,8 @@ const CitiesBlock = () => {
       try {
         const cities = await api.getData(API_ENDPOINT);
         // setCities(cities);
-        dispatch(actions.setCities(cities));
+        // dispatch(actions.setCities(cities));
+        dispatch(citiesActions.setCities(cities));
       } catch (error) {
         setError(error.message);
       } finally {
@@ -101,7 +103,8 @@ const CitiesBlock = () => {
       try {
         const newCity = await api.saveItem(API_ENDPOINT, activeCity);
         // setCities(prevCities => [...prevCities, newCity]);
-        dispatch(actions.addCity(newCity));
+        // dispatch(actions.addCity(newCity));
+        dispatch(citiesActions.addCity(newCity));
         toggleAddForm();
         toast.success(`City ${newCity.name} was added`);
       } catch (error) {
@@ -146,7 +149,8 @@ const CitiesBlock = () => {
         //     city.id === updatedCity.id ? updatedCity : city,
         //   ),
         // );
-        dispatch(actions.editCity(updatedCity));
+        // dispatch(actions.editCity(updatedCity));
+        dispatch(citiesActions.editCity(updatedCity));
       } catch (error) {
         setError(error.message);
         toast.error(`Somthing went wrong! Error: ${error.message}`);
@@ -180,7 +184,8 @@ const CitiesBlock = () => {
         // setCities(prevCities =>
         //   prevCities.filter(city => city.id !== deletedCity.id),
         // );
-        dispatch(actions.deleteCity(deletedCity.id));
+        // dispatch(actions.deleteCity(deletedCity.id));
+        dispatch(citiesActions.deleteCity(deletedCity.id));
       } catch (error) {
         setError(error.message);
         toast.error(`Somthing went wrong! Error: ${error.message}`);
@@ -232,7 +237,8 @@ const CitiesBlock = () => {
   useEffect(() => {
     if (cities.length === 1) {
       // setFilter('');
-      dispatch(actions.changeFilter(''));
+      // dispatch(actions.changeFilter(''));
+      dispatch(citiesActions.changeFilter(''));
     }
   }, [cities.length, dispatch]);
 

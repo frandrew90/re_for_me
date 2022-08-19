@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
-import citiesReducer from './cities/citiesReducer';
+// import citiesReducer from './cities/citiesReducer';
+import citiesReducer from './cities/citiesSlice';
 import tutorsReducer from './tutors/tutorsReducer';
 
 const logger = createLogger({
