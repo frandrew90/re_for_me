@@ -1,3 +1,41 @@
+// There is  mutable method (with immer) for work with State below, use ONLY AS EXCEPTION!!!!!!!!!!!!!!!!!!!
+// import { createSlice } from '@reduxjs/toolkit';
+
+// const initialState = {
+//   items: [],
+//   filter: '',
+// };
+
+// const citiesSlice = createSlice({
+//   name: 'cities',
+//   initialState,
+//   reducers: {
+//     setCities: (state, { payload }) => (state.items = payload),
+
+//     addCity: (state, { payload }) => state.items.push(payload),
+
+//     editCity: (state, { payload }) => {
+//       const idx = state.items.findIndex(city => city.id === payload.id);
+//       state.items[idx] = payload;
+//     },
+
+//     deleteCity: (state, { payload }) => {
+//       const idx = state.items.findIndex(city => city.id === payload.id);
+//       state.items.splice(idx, 1);
+//     },
+
+//     changeFilter: (state, { payload }) => (state.filter = payload),
+//   },
+// });
+
+// export const { setCities, addCity, editCity, deleteCity, changeFilter } =
+//   citiesSlice.actions;
+
+// export default citiesSlice.reducer;
+
+//================================================================================
+// There are two immutable methods for work with State below!!!!!!!!!!!!!!!!!!!
+
 //COMBINE SLICE FOR EACH PIECE OF STATE
 
 import { createSlice } from '@reduxjs/toolkit';
