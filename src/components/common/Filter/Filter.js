@@ -3,7 +3,8 @@ import React from 'react';
 import { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ThemeContext, themes } from '../../../context/themeContext';
-import { changeFilter } from '../../../redux/cities/citiesActions';
+// import { changeFilter } from '../../../redux/cities/citiesActions';
+import { citiesActions } from '../../../redux/cities';
 import s from './Filter.module.css';
 
 const Filter = ({ label = '', onFilterChange, value }) => {
@@ -19,7 +20,8 @@ const Filter = ({ label = '', onFilterChange, value }) => {
           type="text"
           // value={value}
           value={filter}
-          onChange={e => dispatch(changeFilter(e.target.value))}
+          onChange={e => dispatch(citiesActions.changeFilter(e.target.value))}
+          // onChange={e => dispatch(changeFilter(e.target.value))}
           // onChange={e => onFilterChange(e.target.value)}
           className={
             theme === themes.light

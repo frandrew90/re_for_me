@@ -1,16 +1,47 @@
-import { createStore, combineReducers } from 'redux';
-import { devToolsEnhancer } from 'redux-devtools-extension';
-import citiesReducer from './cities/citiesReducer';
+import { configureStore } from '@reduxjs/toolkit';
+import { createLogger } from 'redux-logger';
+// import citiesReducer from './cities/citiesReducer';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import citiesReducer from './cities/citiesSlice';
 import tutorsReducer from './tutors/tutorsReducer';
 
-// console.log(citiesReducer);
+const persistCitiesConfig = {
+  key: 'filter',
+  storage,
+  whitelist: ['filter'],
+};
 
-const rootReducer = combineReducers({
-  tutors: tutorsReducer,
-  cities: citiesReducer,
-  departments: () => [],
+const logger = createLogger({
+  collapsed: (getState, action, logEntry) => !logEntry.error,
+  timestamp: false,
 });
 
-const store = createStore(rootReducer, devToolsEnhancer());
+const store = configureStore({
+  reducer: {
+    tutors: tutorsReducer,
+    // cities: citiesReducer,
+    cities: persistReducer(persistCitiesConfig, citiesReducer),
+    departments: () => [],
+  },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(logger),
+  devTools: process.env.NODE_ENV !== 'production',
+});
 
-export default store;
+const persistor = persistStore(store);
+
+export { store, persistor };
