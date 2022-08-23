@@ -69,15 +69,6 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
   });
   const { errors } = formState;
 
-  // const [firstName, setFirstName] = useState('');
-  // const [lastName, setLastName] = useState('');
-  // const [patronymic, setPatronymic] = useState('');
-  // const [gender, setGender] = useState('');
-  // const [phone, setPhone] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [city, setCity] = useState('');
-  // const [options, setOptions] = useState('');
-  // const [isFullTime, setIsFullTime] = useState(false);
   // with Redux
   // api request status
   const [newTutor, setNewTutor] = useState(null);

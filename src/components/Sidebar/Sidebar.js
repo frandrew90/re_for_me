@@ -1,7 +1,8 @@
 // import React, { useState } from 'react';
-import { useContext } from 'react';
+import { useContext, Suspense } from 'react';
 import useToggle from '../../hooks/useToggle';
 import Navigation from '../Navigation/Navigation';
+import Loader from '../common/Loader/Loader';
 import { navConfig } from '../../data/navigation';
 import { ThemeContext } from '../../context/themeContext';
 import './Sidebar.css';
@@ -39,7 +40,9 @@ const Sidebar = () => {
         aria-label="Toggle sidebar"
         onClick={toggleSidebar}
       ></button>
-      <Navigation navConfig={navConfig} />
+      <Suspense fallback={<Loader />}>
+        <Navigation navConfig={navConfig} />
+      </Suspense>
     </div>
   );
 };

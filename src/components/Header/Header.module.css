@@ -13,3 +13,9 @@
   composes: mainHeader;
   color: #dfdfdf;
 }
+
+.switchersWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

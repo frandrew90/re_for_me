@@ -1,0 +1,45 @@
+{
+  "sidebar": {
+    "university": "University",
+    "departments": "Faculties"
+  },
+  "university": {
+    "info": "Info about the university",
+    "word": "university",
+    "descriprtion": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor neque saepe voluptates consectetur sunt ut iste aliquam expedita dolore sit, modi rerum nulla reprehenderit, dicta est. Qui incidunt nisi necessitatibus eligendi dolorem velit dolor laboriosam, dolores ab? Sit itaque quae, totam libero consequuntur atque rem ipsa, cum, excepturi explicabo voluptate.Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor neque saepe voluptates consectetur sunt ut iste aliquam expedita dolore sit, modi rerum nulla reprehenderit, dicta est. Qui incidunt nisi necessitatibus eligendi dolorem velit dolor laboriosam, dolores ab? Sit itaque quae, totam libero consequuntur atque rem ipsa, cum, excepturi explicabo voluptate."
+  },
+  "common": {
+    "add": "add",
+    "cancel-add": "Cancel adding",
+    "edit": "edit",
+    "delete": "delete"
+  },
+  "tutors": {
+    "tutors": "Tutors",
+    "no-tutors": "No tutors yet",
+    "add-tutor": "Add tutor",
+    "adding-tutor": "Adding tutor",
+    "invite": "Invite"
+  },
+  "cities": {
+    "cities": "Cities",
+    "no-cities": "No cities yet",
+    "add-city": "Add city",
+    "adding-city": "Adding city",
+    "city": "City"
+  },
+  "departments": {
+    "departments": "Faculties",
+    "no-departments": "No faculties yet",
+    "add-department": "Add faculty",
+    "adding-department": "Adding faculty",
+    "department": "Faculty",
+    "success-add": "The faculty `{{name}}` was added",
+    "success-edit": "The faculty `{{name}}` was edited",
+    "success-delete": "The faculty was deleted"
+  },
+  "department": {
+    "descriprtion": "descriprtion",
+    "history": "history"
+  }
+}
