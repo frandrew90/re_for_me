@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import BigButton from '../../common/BigButton/BigButton';
 import Loader from '../../common/Loader/Loader';
 import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
@@ -38,36 +36,32 @@ const GENDER = {
 
 const API_ENDPOINT = 'tutors';
 
-const phoneRegExp =
-  /^((8|\+38)[- ]?)?\(?(039|044|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\)?([- ]?)?[\d\- ]{7,10}$/;
+const textValidation = {
+  required: 'this field is required',
+  minLength: {
+    value: 2,
+    message: 'Field should have more then 1 letter',
+  },
+  maxLength: {
+    value: 20,
+    message: 'Field should have less then 21 letters',
+  },
+};
 
-const schema = yup
-  .object({
-    firstName: yup
-      .string()
-      .min(2, 'First name Min length is 2')
-      .max(20, 'First name Max length is 20')
-      .required('First name is required'),
-    lastName: yup
-      .string()
-      .min(2, 'Last name Min length is 2')
-      .max(20, 'Last name Max length is 20')
-      .required('Last name is required'),
-    phone: yup
-      .string()
-      .matches(phoneRegExp, 'Invalid phone number')
-      .required('Phone number is required'),
-    email: yup.string().email('Invalid email').required('Email is required'),
-    city: yup.string().required('City is required'),
-    gender: yup.string().nullable().required('Gender is required'),
-  })
-  .required();
+const emailValidation = {
+  required: 'Email is required',
+  pattern: {
+    value:
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+    message: 'Invalid email address',
+  },
+};
 
 const TutorForm = ({ closeForm, onAddTutor }) => {
-  const { register, handleSubmit, formState, reset } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const { register, handleSubmit, formState } = useForm();
   const { errors } = formState;
+
+  console.log(errors);
 
   // const [firstName, setFirstName] = useState('');
   // const [lastName, setLastName] = useState('');
@@ -85,8 +79,18 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
   const [error, setError] = useState(null);
 
   const onSubmit = data => {
-    setNewTutor(data);
-    reset();
+    console.log(data);
+    // setNewTutor({
+    //   firstName,
+    //   lastName,
+    //   patronymic,
+    //   gender,
+    //   phone,
+    //   email,
+    //   city,
+    //   options,
+    //   isFullTime,
+    // });
   };
 
   //ADD TUTOR
@@ -123,16 +127,26 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
               className={s.formInput}
               type="text"
               placeholder="First name*"
-              {...register('firstName')}
+              {...register('firstName', {
+                required: true,
+                minLength: 2,
+                maxLength: 20,
+              })}
             />
-            {errors.firstName && (
-              <ErrorMsg message={errors.firstName.message} />
+            {errors.firstName?.type === 'required' && (
+              <ErrorMsg message="First name is required" />
+            )}
+            {errors.firstName?.type === 'minLength' && (
+              <ErrorMsg message="First name Min length is 2" />
+            )}
+            {errors.firstName?.type === 'maxLength' && (
+              <ErrorMsg message="First name Max length is 20" />
             )}
             <input
               className={s.formInput}
               type="text"
               placeholder="Last name*"
-              {...register('lastName')}
+              {...register('lastName', textValidation)}
             />
             {errors.lastName && <ErrorMsg message={errors.lastName.message} />}
             <input
@@ -145,14 +159,20 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
               className={s.formInput}
               type="tel"
               placeholder="Phone number*"
-              {...register('phone')}
+              {...register('phone', {
+                required: true,
+                pattern:
+                  /^((8|\+38)[- ]?)?\(?(039|044|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\)?([- ]?)?[\d\- ]{7,10}$/,
+              })}
             />
-            {!!errors.phone && <ErrorMsg message={errors.phone.message} />}
+            {!!errors.phone && (
+              <ErrorMsg message="Please, enter your phone number(+380123456789)" />
+            )}
             <input
               className={s.formInput}
               type="email"
               placeholder="Email*"
-              {...register('email')}
+              {...register('email', emailValidation)}
             />
             {errors.email && <ErrorMsg message={errors.email.message} />}
             <input
@@ -162,15 +182,18 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
               {...register('options')}
             />
 
-            <select className={s.inner} {...register('city')}>
+            <select
+              className={s.inner}
+              {...register('city', {
+                required: true,
+              })}
+            >
               {citiesOptions.map(({ value, label }) => (
                 <option key={value} value={value}>
                   {label}
                 </option>
               ))}
             </select>
-
-            {errors.city && <ErrorMsg message={errors.city.message} />}
 
             <section>
               <h5 className={s.inner}>Sex*</h5>
@@ -180,18 +203,21 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
                   className={s.radioBtn}
                   type="radio"
                   value={GENDER.MALE}
-                  {...register('gender')}
+                  {...register('gender', {
+                    required: true,
+                  })}
                 />
                 <label className={s.inner}>Female</label>
                 <input
                   className={s.radioBtn}
                   type="radio"
                   value={GENDER.FEMALE}
-                  {...register('gender')}
+                  {...register('gender', {
+                    required: true,
+                  })}
                 />
               </div>
             </section>
-            {errors.gender && <ErrorMsg message={errors.gender.message} />}
 
             <div className={s.checkboxWrapper}>
               <label className={s.inner}>Full time</label>
