@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import BigButton from '../../common/BigButton/BigButton';
 import Loader from '../../common/Loader/Loader';
 import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
@@ -38,46 +35,59 @@ const GENDER = {
 
 const API_ENDPOINT = 'tutors';
 
-const phoneRegExp =
-  /^((8|\+38)[- ]?)?\(?(039|044|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\)?([- ]?)?[\d\- ]{7,10}$/;
-
-const schema = yup
-  .object({
-    firstName: yup
-      .string()
-      .min(2, 'First name Min length is 2')
-      .max(20, 'First name Max length is 20')
-      .required('First name is required'),
-    lastName: yup
-      .string()
-      .min(2, 'Last name Min length is 2')
-      .max(20, 'Last name Max length is 20')
-      .required('Last name is required'),
-    phone: yup
-      .string()
-      .matches(phoneRegExp, 'Invalid phone number')
-      .required('Phone number is required'),
-    email: yup.string().email('Invalid email').required('Email is required'),
-    city: yup.string().required('City is required'),
-    gender: yup.string().nullable().required('Gender is required'),
-  })
-  .required();
-
 const TutorForm = ({ closeForm, onAddTutor }) => {
-  const { register, handleSubmit, formState, reset } = useForm({
-    resolver: yupResolver(schema),
-  });
-  const { errors } = formState;
-
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [patronymic, setPatronymic] = useState('');
+  const [gender, setGender] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
+  const [options, setOptions] = useState('');
+  const [isFullTime, setIsFullTime] = useState(false);
   // with Redux
   // api request status
   const [newTutor, setNewTutor] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const onSubmit = data => {
-    setNewTutor(data);
+  const handleSubmit = e => {
+    e.preventDefault();
+    setNewTutor({
+      firstName,
+      lastName,
+      patronymic,
+      gender,
+      phone,
+      email,
+      city,
+      options,
+      isFullTime,
+    });
+    // onSubmit({
+    //   firstName,
+    //   lastName,
+    //   patronymic,
+    //   gender,
+    //   phone,
+    //   email,
+    //   city,
+    //   options,
+    //   isFullTime,
+    // });
     reset();
+  };
+
+  const reset = () => {
+    setFirstName('');
+    setLastName('');
+    setPatronymic('');
+    setGender('');
+    setPhone('');
+    setEmail('');
+    setCity('');
+    setOptions('');
+    setIsFullTime(false);
   };
 
   //ADD TUTOR
@@ -103,65 +113,87 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
     addTutor();
   }, [closeForm, newTutor, onAddTutor]);
 
+  const requiredValues = [
+    firstName,
+    lastName,
+    patronymic,
+    gender,
+    phone,
+    email,
+    city,
+    options,
+  ];
+  const isSubmitBtnDisabled = requiredValues.some(value => !value);
+
   return (
     <div className={s.container}>
       {loading && <Loader />}
       <Paper>
         <div className={s.inner}>
           <h4 className="formName">Add Tutor</h4>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit}>
             <input
-              className={s.formInput}
-              type="text"
-              placeholder="First name*"
-              {...register('firstName')}
-            />
-            {errors.firstName && (
-              <ErrorMsg message={errors.firstName.message} />
-            )}
-            <input
-              className={s.formInput}
+              name="lastName"
+              value={lastName}
               type="text"
               placeholder="Last name*"
-              {...register('lastName')}
+              required
+              onChange={e => setLastName(e.target.value)}
             />
-            {errors.lastName && <ErrorMsg message={errors.lastName.message} />}
             <input
-              className={s.formInput}
+              name="firstName"
+              value={firstName}
+              type="text"
+              placeholder="First name*"
+              required
+              onChange={e => setFirstName(e.target.value)}
+            />
+            <input
+              name="patronymic"
+              value={patronymic}
               type="text"
               placeholder="Patronymic*"
-              {...register('patronymic')}
+              required
+              onChange={e => setPatronymic(e.target.value)}
             />
             <input
-              className={s.formInput}
+              name="phone"
+              value={phone}
               type="tel"
               placeholder="Phone number*"
-              {...register('phone')}
+              required
+              onChange={e => setPhone(e.target.value)}
             />
-            {!!errors.phone && <ErrorMsg message={errors.phone.message} />}
             <input
-              className={s.formInput}
+              name="email"
+              value={email}
               type="email"
               placeholder="Email*"
-              {...register('email')}
-            />
-            {errors.email && <ErrorMsg message={errors.email.message} />}
-            <input
-              className={s.formInput}
-              type="text"
-              placeholder="Kind of activity*"
-              {...register('options')}
+              required
+              onChange={e => setEmail(e.target.value)}
             />
 
-            <select className={s.inner} {...register('city')}>
+            <input
+              name="options"
+              value={options}
+              type="text"
+              placeholder="Kind of activity*"
+              required
+              onChange={e => setOptions(e.target.value)}
+            />
+
+            <select
+              name="city"
+              value={city}
+              onChange={e => setCity(e.target.value)}
+              className={s.inner}
+            >
               {citiesOptions.map(({ value, label }) => (
                 <option key={value} value={value}>
                   {label}
                 </option>
               ))}
             </select>
-
-            {errors.city && <ErrorMsg message={errors.city.message} />}
 
             <section>
               <h5 className={s.inner}>Sex*</h5>
@@ -170,32 +202,41 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
                 <input
                   className={s.radioBtn}
                   type="radio"
+                  checked={gender === GENDER.MALE}
+                  name="gender"
                   value={GENDER.MALE}
-                  {...register('gender')}
+                  onChange={e => setGender(e.target.value)}
                 />
                 <label className={s.inner}>Female</label>
                 <input
                   className={s.radioBtn}
                   type="radio"
+                  checked={gender === GENDER.FEMALE}
+                  name="gender"
                   value={GENDER.FEMALE}
-                  {...register('gender')}
+                  onChange={e => setGender(e.target.value)}
                 />
               </div>
             </section>
-            {errors.gender && <ErrorMsg message={errors.gender.message} />}
 
             <div className={s.checkboxWrapper}>
               <label className={s.inner}>Full time</label>
               <input
                 className={s.checkbox}
+                name="isFullTime"
                 type="checkbox"
-                {...register('isFullTime')}
+                checked={isFullTime}
+                onChange={e => setIsFullTime(e.target.checked)}
               />
             </div>
 
             {error && <ErrorMsg message={error} />}
 
-            <BigButton type="submit" text="Invite" />
+            <BigButton
+              type="submit"
+              text="Invite"
+              disabled={isSubmitBtnDisabled}
+            />
           </form>
         </div>
       </Paper>

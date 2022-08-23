@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useTranslation } from 'react-i18next';
 import CitiesBlock from '../../components/CitiesBlock/CitiesBlock';
 import Section from '../../components/common/Section/Section';
 import FacultyBlock from '../../components/FacultyBlock/FacultyBlock';
@@ -15,21 +15,23 @@ import facultyIcon from '../../images/book.svg';
 const { name, description } = universityInfo;
 
 const UniversityPage = () => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Header title="Info about the University" />
+      <Header title={t('university.info')} />
 
       <UniversityBlock name={name} description={description} />
 
-      <Section icon={tutorsIcon} title="Tutors">
+      <Section icon={tutorsIcon} title={t('tutors.tutors')}>
         <TutorsBlock />
       </Section>
 
-      <Section icon={citiesIcon} title="Cities">
+      <Section icon={citiesIcon} title={t('cities.cities')}>
         <CitiesBlock />
       </Section>
 
-      <Section icon={facultyIcon} title="Faculties">
+      <Section icon={facultyIcon} title={t('departments.departments')}>
         <FacultyBlock />
       </Section>
     </>

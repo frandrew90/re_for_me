@@ -1,5 +1,6 @@
 import React, { useContext, lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+
 import Loader from '../common/Loader/Loader';
 // import FacultyPage from '../../pages/FacultyPage/FacultyPage';
 // import NotFoundPage from '../../pages/NotFoundPage/NotFoundPage';
