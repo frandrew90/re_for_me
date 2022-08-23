@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useForm } from 'react-hook-form';
 import BigButton from '../../common/BigButton/BigButton';
 import Loader from '../../common/Loader/Loader';
 import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
@@ -36,51 +35,36 @@ const GENDER = {
 
 const API_ENDPOINT = 'tutors';
 
-const textValidation = {
-  required: 'this field is required',
-  minLength: {
-    value: 2,
-    message: 'Field should have more then 1 letter',
-  },
-  maxLength: {
-    value: 20,
-    message: 'Field should have less then 21 letters',
-  },
-};
-
-const emailValidation = {
-  required: 'Email is required',
-  pattern: {
-    value:
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-    message: 'Invalid email address',
-  },
-};
-
 const TutorForm = ({ closeForm, onAddTutor }) => {
-  const { register, handleSubmit, watch, formState } = useForm();
-  const { errors } = formState;
-
-  console.log(errors);
-
-  // const [firstName, setFirstName] = useState('');
-  // const [lastName, setLastName] = useState('');
-  // const [patronymic, setPatronymic] = useState('');
-  // const [gender, setGender] = useState('');
-  // const [phone, setPhone] = useState('');
-  // const [email, setEmail] = useState('');
-  // const [city, setCity] = useState('');
-  // const [options, setOptions] = useState('');
-  // const [isFullTime, setIsFullTime] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [patronymic, setPatronymic] = useState('');
+  const [gender, setGender] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [city, setCity] = useState('');
+  const [options, setOptions] = useState('');
+  const [isFullTime, setIsFullTime] = useState(false);
   // with Redux
   // api request status
   const [newTutor, setNewTutor] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const onSubmit = data => {
-    console.log(data);
-    // setNewTutor({
+  const handleSubmit = e => {
+    e.preventDefault();
+    setNewTutor({
+      firstName,
+      lastName,
+      patronymic,
+      gender,
+      phone,
+      email,
+      city,
+      options,
+      isFullTime,
+    });
+    // onSubmit({
     //   firstName,
     //   lastName,
     //   patronymic,
@@ -91,6 +75,19 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
     //   options,
     //   isFullTime,
     // });
+    reset();
+  };
+
+  const reset = () => {
+    setFirstName('');
+    setLastName('');
+    setPatronymic('');
+    setGender('');
+    setPhone('');
+    setEmail('');
+    setCity('');
+    setOptions('');
+    setIsFullTime(false);
   };
 
   //ADD TUTOR
@@ -116,77 +113,80 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
     addTutor();
   }, [closeForm, newTutor, onAddTutor]);
 
+  const requiredValues = [
+    firstName,
+    lastName,
+    patronymic,
+    gender,
+    phone,
+    email,
+    city,
+    options,
+  ];
+  const isSubmitBtnDisabled = requiredValues.some(value => !value);
+
   return (
     <div className={s.container}>
       {loading && <Loader />}
       <Paper>
         <div className={s.inner}>
           <h4 className="formName">Add Tutor</h4>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit}>
             <input
-              className={s.formInput}
-              type="text"
-              placeholder="First name*"
-              {...register('firstName', {
-                required: true,
-                minLength: 2,
-                maxLength: 20,
-              })}
-            />
-            {errors.firstName?.type === 'required' && (
-              <ErrorMsg message="First name is required" />
-            )}
-            {errors.firstName?.type === 'minLength' && (
-              <ErrorMsg message="First name Min length is 2" />
-            )}
-            {errors.firstName?.type === 'maxLength' && (
-              <ErrorMsg message="First name Max length is 20" />
-            )}
-            <input
-              className={s.formInput}
+              name="lastName"
+              value={lastName}
               type="text"
               placeholder="Last name*"
-              {...register('lastName', textValidation)}
+              required
+              onChange={e => setLastName(e.target.value)}
             />
-            {errors.lastName && <ErrorMsg message={errors.lastName.message} />}
             <input
-              className={s.formInput}
+              name="firstName"
+              value={firstName}
+              type="text"
+              placeholder="First name*"
+              required
+              onChange={e => setFirstName(e.target.value)}
+            />
+            <input
+              name="patronymic"
+              value={patronymic}
               type="text"
               placeholder="Patronymic*"
-              {...register('patronymic')}
+              required
+              onChange={e => setPatronymic(e.target.value)}
             />
             <input
-              className={s.formInput}
+              name="phone"
+              value={phone}
               type="tel"
               placeholder="Phone number*"
-              {...register('phone', {
-                required: true,
-                pattern:
-                  /^((8|\+38)[- ]?)?\(?(039|044|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\)?([- ]?)?[\d\- ]{7,10}$/,
-              })}
+              required
+              onChange={e => setPhone(e.target.value)}
             />
-            {!!errors.phone && (
-              <ErrorMsg message="Please, enter your phone number(+380123456789)" />
-            )}
             <input
-              className={s.formInput}
+              name="email"
+              value={email}
               type="email"
               placeholder="Email*"
-              {...register('email', emailValidation)}
+              required
+              onChange={e => setEmail(e.target.value)}
             />
-            {errors.email && <ErrorMsg message={errors.email.message} />}
+
             <input
-              className={s.formInput}
+              name="options"
+              value={options}
               type="text"
               placeholder="Kind of activity*"
-              {...register('options')}
+              required
+              onChange={e => setOptions(e.target.value)}
             />
 
             <select
+              name="city"
+              value={city}
+              onChange={e => setCity(e.target.value)}
               className={s.inner}
-              {...register('city', {
-                required: true,
-              })}
             >
               {citiesOptions.map(({ value, label }) => (
                 <option key={value} value={value}>
@@ -202,19 +202,19 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
                 <input
                   className={s.radioBtn}
                   type="radio"
+                  checked={gender === GENDER.MALE}
+                  name="gender"
                   value={GENDER.MALE}
-                  {...register('gender', {
-                    required: true,
-                  })}
+                  onChange={e => setGender(e.target.value)}
                 />
                 <label className={s.inner}>Female</label>
                 <input
                   className={s.radioBtn}
                   type="radio"
+                  checked={gender === GENDER.FEMALE}
+                  name="gender"
                   value={GENDER.FEMALE}
-                  {...register('gender', {
-                    required: true,
-                  })}
+                  onChange={e => setGender(e.target.value)}
                 />
               </div>
             </section>
@@ -223,14 +223,20 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
               <label className={s.inner}>Full time</label>
               <input
                 className={s.checkbox}
+                name="isFullTime"
                 type="checkbox"
-                {...register('isFullTime')}
+                checked={isFullTime}
+                onChange={e => setIsFullTime(e.target.checked)}
               />
             </div>
 
             {error && <ErrorMsg message={error} />}
 
-            <BigButton type="submit" text="Invite" />
+            <BigButton
+              type="submit"
+              text="Invite"
+              disabled={isSubmitBtnDisabled}
+            />
           </form>
         </div>
       </Paper>
