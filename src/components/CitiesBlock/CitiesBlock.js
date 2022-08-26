@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-// import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-import { citiesActions } from '../../redux/cities';
-// import * as actions from '../../redux/cities/citiesActions';
+import { citiesActions, citiesOperations } from '../../redux/cities';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
@@ -13,16 +11,11 @@ import Filter from '../common/Filter/Filter';
 import ErrorMsg from '../common/ErrorMsg/ErrorMsg';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
-// import CitiesList from './CitiesList/CitiesList';
 import ItemsList from '../common/ItemsList/ItemsList';
-// import * as storage from '../../services/localStorage';
-import * as api from '../../services/api';
 import cancelIcon from '../../images/cancel-circle.svg';
 import pencilIcon from '../../images/pencil.svg';
 import addIcon from '../../images/plus.svg';
 import deleteIcon from '../../images/bin.svg';
-
-const API_ENDPOINT = 'cities';
 
 const ACTION = {
   NONE: 'none',
@@ -31,14 +24,14 @@ const ACTION = {
   DELETE: 'delete',
 };
 
-// const FILTER_KEY = 'citiesFilter';
+const { getCities, addCity, editCity, deleteCity } = citiesOperations;
 
 const CitiesBlock = () => {
-  const cities = useSelector(state => state.cities.items);
+  const cities = useSelector(state => state.cities.data.items);
   const filter = useSelector(state => state.cities.filter);
+  const loading = useSelector(state => state.cities.data.loading);
+  const error = useSelector(state => state.cities.data.error);
   const dispatch = useDispatch();
-  // const [cities, setCities] = useState([]);
-  // const [filter, setFilter] = useState(() => storage.get(FILTER_KEY) ?? '');
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [openedModal, setOpenedModal] = useState(ACTION.NONE);
@@ -46,32 +39,12 @@ const CitiesBlock = () => {
   const [action, setAction] = useState(ACTION.NONE);
   const [activeCity, setActiveCity] = useState(null);
   //api request status
-  const [firstLoading, setFirstLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // const [firstLoading, setFirstLoading] = useState(false);
 
   //GET CITIES
 
   useEffect(() => {
-    const fetchCities = async () => {
-      setFirstLoading(true);
-      setLoading(true);
-      setError(null);
-
-      try {
-        const cities = await api.getData(API_ENDPOINT);
-        // setCities(cities);
-        // dispatch(actions.setCities(cities));
-        dispatch(citiesActions.setCities(cities));
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-        setFirstLoading(false);
-      }
-    };
-
-    fetchCities();
+    dispatch(getCities());
   }, [dispatch]);
 
   //ADD CITY
@@ -94,29 +67,13 @@ const CitiesBlock = () => {
     cities.some(city => city.name === cityName);
 
   useEffect(() => {
-    if (action !== ACTION.ADD) return;
-
-    const addCity = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const newCity = await api.saveItem(API_ENDPOINT, activeCity);
-        // setCities(prevCities => [...prevCities, newCity]);
-        // dispatch(actions.addCity(newCity));
-        dispatch(citiesActions.addCity(newCity));
-        toggleAddForm();
-        toast.success(`City ${newCity.name} was added`);
-      } catch (error) {
-        setError(error.message);
-        toast.error(`Somthing went wrong! Error: ${error.message}`);
-      } finally {
-        setAction(ACTION.NONE);
-        setLoading(false);
-        setActiveCity(null);
-      }
-    };
-    addCity();
+    if (action !== ACTION.ADD || !activeCity) return;
+    dispatch(addCity(activeCity)).then(() => {
+      toggleAddForm();
+      toast.success(`City ${activeCity.name} was added`);
+      setAction(ACTION.NONE);
+      setActiveCity(null);
+    });
   }, [action, activeCity, dispatch]);
 
   //EDIT CITY
@@ -138,30 +95,11 @@ const CitiesBlock = () => {
   useEffect(() => {
     if (action !== ACTION.EDIT) return;
 
-    const editCity = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const updatedCity = await api.editItem(API_ENDPOINT, activeCity);
-        // setCities(prevCities =>
-        //   prevCities.map(city =>
-        //     city.id === updatedCity.id ? updatedCity : city,
-        //   ),
-        // );
-        // dispatch(actions.editCity(updatedCity));
-        dispatch(citiesActions.editCity(updatedCity));
-      } catch (error) {
-        setError(error.message);
-        toast.error(`Somthing went wrong! Error: ${error.message}`);
-      } finally {
-        setAction(ACTION.NONE);
-        closeModal();
-        setLoading(false);
-        setActiveCity(null);
-      }
-    };
-    editCity();
+    dispatch(editCity(activeCity)).then(() => {
+      setAction(ACTION.NONE);
+      closeModal();
+      setActiveCity(null);
+    });
   }, [action, activeCity, dispatch]);
 
   //DELETE CITY
@@ -176,27 +114,11 @@ const CitiesBlock = () => {
   useEffect(() => {
     if (action !== ACTION.DELETE) return;
 
-    const deleteCity = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const deletedCity = await api.deleteItem(API_ENDPOINT, activeCity.id);
-        // setCities(prevCities =>
-        //   prevCities.filter(city => city.id !== deletedCity.id),
-        // );
-        // dispatch(actions.deleteCity(deletedCity.id));
-        dispatch(citiesActions.deleteCity(deletedCity.id));
-      } catch (error) {
-        setError(error.message);
-        toast.error(`Somthing went wrong! Error: ${error.message}`);
-      } finally {
-        setAction(ACTION.NONE);
-        closeModal();
-        setLoading(false);
-        setActiveCity(null);
-      }
-    };
-    deleteCity();
+    dispatch(deleteCity(activeCity.id)).then(() => {
+      setAction(ACTION.NONE);
+      closeModal();
+      setActiveCity(null);
+    });
   }, [action, activeCity, dispatch]);
 
   //CLOSE MODAL
@@ -231,13 +153,11 @@ const CitiesBlock = () => {
 
   // const filteredCities = getFilteredCities();
 
-  const noCities = !firstLoading && !loading && !cities.length;
+  const noCities = !loading && !cities.length;
 
   //FIX FILTER BUG
   useEffect(() => {
     if (cities.length === 1) {
-      // setFilter('');
-      // dispatch(actions.changeFilter(''));
       dispatch(citiesActions.changeFilter(''));
     }
   }, [cities.length, dispatch]);
@@ -246,7 +166,7 @@ const CitiesBlock = () => {
     <>
       {loading && <Loader />}
 
-      {firstLoading && <Skeleton />}
+      {loading && <Skeleton />}
 
       {cities.length > 1 && (
         <Filter
