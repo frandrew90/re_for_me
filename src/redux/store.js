@@ -1,5 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { createLogger } from 'redux-logger';
+// import { createLogger } from 'redux-logger';
+import { customMiddlewareLogger } from './middleware/logger';
+// import { myMiddleware } from './middleware/logger';
 // import citiesReducer from './cities/citiesReducer';
 import {
   persistStore,
@@ -21,10 +23,10 @@ const persistCitiesConfig = {
   whitelist: ['filter'],
 };
 
-const logger = createLogger({
-  collapsed: (getState, action, logEntry) => !logEntry.error,
-  timestamp: false,
-});
+// const logger = createLogger({
+//   collapsed: (getState, action, logEntry) => !logEntry.error,
+//   timestamp: false,
+// });
 
 const store = configureStore({
   reducer: {
@@ -38,7 +40,10 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(logger),
+    })
+      // .concat(logger)
+      // .concat(myMiddleware)
+      .concat(customMiddlewareLogger),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

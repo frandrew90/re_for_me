@@ -8,8 +8,8 @@ import BigButton from '../../common/BigButton/BigButton';
 import Loader from '../../common/Loader/Loader';
 import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
 import Paper from '../../common/Paper/Paper';
-import * as api from '../../../services/api';
-import { addTutor } from '../../../redux/tutors/tutorsActions';
+// import * as api from '../../../services/api';
+import { addTutor } from '../../../redux/tutors/tutorsOperations';
 import s from './TutorForm.module.css';
 
 const citiesOptions = [
@@ -36,7 +36,7 @@ const GENDER = {
   FEMALE: 'female',
 };
 
-const API_ENDPOINT = 'tutors';
+// const API_ENDPOINT = 'tutors';
 
 const phoneRegExp =
   /^((8|\+38)[- ]?)?\(?(039|044|050|063|066|067|068|073|091|092|093|094|095|096|097|098|099)\)?([- ]?)?[\d\- ]{7,10}$/;
@@ -63,17 +63,13 @@ const schema = yup
   })
   .required();
 
-const TutorForm = ({ closeForm, onAddTutor }) => {
+const TutorForm = ({ closeForm, onAddTutor, loading, error }) => {
   const { register, handleSubmit, formState, reset } = useForm({
     resolver: yupResolver(schema),
   });
   const { errors } = formState;
 
-  // with Redux
-  // api request status
   const [newTutor, setNewTutor] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const onSubmit = data => {
     setNewTutor(data);
@@ -85,22 +81,12 @@ const TutorForm = ({ closeForm, onAddTutor }) => {
   useEffect(() => {
     if (!newTutor) return;
 
-    const addTutor = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const savedTutor = await api.saveItem(API_ENDPOINT, newTutor);
-        onAddTutor(savedTutor);
-        // setTutors(prevTutors => [...prevTutors, savedTutor]);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-        closeForm();
-        setNewTutor(null);
-      }
+    const addNewTutor = async () => {
+      await onAddTutor(newTutor);
+      setNewTutor(null);
+      closeForm();
     };
-    addTutor();
+    addNewTutor();
   }, [closeForm, newTutor, onAddTutor]);
 
   return (
@@ -207,8 +193,13 @@ TutorForm.propTypes = {
   closeForm: PropTypes.func.isRequired,
 };
 
+const mapStateToProps = state => ({
+  loading: state.tutors.loading,
+  error: state.tutors.error,
+});
+
 const mapDispatchToProps = dispatch => ({
   onAddTutor: tutor => dispatch(addTutor(tutor)),
 });
 
-export default connect(null, mapDispatchToProps)(TutorForm);
+export default connect(mapStateToProps, mapDispatchToProps)(TutorForm);

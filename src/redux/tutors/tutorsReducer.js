@@ -1,27 +1,46 @@
-import { createReducer } from '@reduxjs/toolkit';
-import { setTutors, addTutor } from './tutorsActions';
+import { createReducer, combineReducers } from '@reduxjs/toolkit';
 
-// ==========================================
-// console.dir(setTutors.type); === 'tutors/set'
-// console.dir(setTutors.toString()); === 'tutors/set'
-// [setTutors] === setTutors.toString(); === 'tutors/set'
-// ==========================================
+import {
+  getTutorsRequest,
+  getTutorsSuccess,
+  getTutorsError,
+  addTutorRequest,
+  addTutorSuccess,
+  addTutorError,
+} from './tutorsActions';
 
-// Простой способ(Usage with the "Map Object" Notation):
-// const tutorsReducer = createReducer([], {
-//   [setTutors]: (_, action) => action.payload,
-//   [addTutor]: (state, action) => [...state, action.payload],
-// });
+const itemsReducer = createReducer([], builder => {
+  builder.addCase(getTutorsSuccess, (_, action) => action.payload);
+  builder.addCase(addTutorSuccess, (state, action) => [
+    ...state,
+    action.payload,
+  ]);
+});
 
-//============================================
-
-// С помощью билдера - рекомендуемый (Usage with the "Builder Callback" Notation)
-//(лучше работает с TS):
-
-const tutorsReducer = createReducer([], builder => {
+const loadingReducer = createReducer(false, builder => {
   builder
-    .addCase(setTutors, (_, action) => action.payload)
-    .addCase(addTutor, (state, action) => [...state, action.payload]);
+    .addCase(getTutorsRequest, () => true)
+    .addCase(getTutorsSuccess, () => false)
+    .addCase(getTutorsError, () => false)
+
+    .addCase(addTutorRequest, () => true)
+    .addCase(addTutorSuccess, () => false)
+    .addCase(addTutorError, () => false);
+});
+
+const errorReducer = createReducer(null, builder => {
+  builder
+    .addCase(getTutorsRequest, () => null)
+    .addCase(getTutorsError, (_, { payload }) => payload)
+
+    .addCase(addTutorRequest, () => null)
+    .addCase(addTutorError, (_, { payload }) => payload);
+});
+
+const tutorsReducer = combineReducers({
+  items: itemsReducer,
+  loading: loadingReducer,
+  error: errorReducer,
 });
 
 export default tutorsReducer;
