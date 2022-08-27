@@ -1,8 +1,20 @@
 {
   "files": {
-    "main.css": "/re_for_me/static/css/main.dff770b3.css",
-    "main.js": "/re_for_me/static/js/main.405edcc9.js",
+    "main.css": "/re_for_me/static/css/main.364598fb.css",
+    "main.js": "/re_for_me/static/js/main.bbf6d5ac.js",
+    "Faculty___Page.css": "/re_for_me/static/css/Faculty___Page.45c08bf1.chunk.css",
+    "Faculty___Page.js": "/re_for_me/static/js/Faculty___Page.f93e4a2b.chunk.js",
+    "FacultyList___Page.css": "/re_for_me/static/css/FacultyList___Page.7d64051b.chunk.css",
+    "FacultyList___Page.js": "/re_for_me/static/js/FacultyList___Page.9dfb8fdf.chunk.js",
+    "University___Page.css": "/re_for_me/static/css/University___Page.b64864dd.chunk.css",
+    "University___Page.js": "/re_for_me/static/js/University___Page.4d1aaca7.chunk.js",
+    "NotFound___Page.js": "/re_for_me/static/js/NotFound___Page.60d3f18d.chunk.js",
+    "static/js/126.732533c0.chunk.js": "/re_for_me/static/js/126.732533c0.chunk.js",
+    "static/js/590.fbeee9d3.chunk.js": "/re_for_me/static/js/590.fbeee9d3.chunk.js",
     "static/media/building2.png": "/re_for_me/static/media/building2.447f05bed6bdce5985fc.png",
+    "static/media/ukFlagIcon.png": "/re_for_me/static/media/ukFlagIcon.c13d49549f54cc7eb00e.png",
+    "static/media/ukrFlagIcon.png": "/re_for_me/static/media/ukrFlagIcon.fb2a1570c20a4065f845.png",
+    "static/media/ruFlagIcon.png": "/re_for_me/static/media/ruFlagIcon.c8cf62a7110d2aa492db.png",
     "static/media/make-group.svg": "/re_for_me/static/media/make-group.6bc46d2543e2595a200a024b5785ca9f.svg",
     "static/media/earth.svg": "/re_for_me/static/media/earth.a65f50152f0b661ea3f4c08c8a11ca3d.svg",
     "index.html": "/re_for_me/index.html",
@@ -13,15 +25,25 @@
     "static/media/cancel-circle.svg": "/re_for_me/static/media/cancel-circle.5316235023f8ff431a6908e72fcf1b1c.svg",
     "static/media/user-tie.svg": "/re_for_me/static/media/user-tie.b655f4b4a4a6404b554481a3de1a1b22.svg",
     "static/media/plus.svg": "/re_for_me/static/media/plus.2c0769885ddf752ac1fa3948fd9aaa27.svg",
+    "static/media/getFetch.cjs": "/re_for_me/static/media/getFetch.c780682470504fffbd04.cjs",
     "static/media/mobile.svg": "/re_for_me/static/media/mobile.3f121ad8d7c096c22b9ee849c180a427.svg",
     "static/media/pencil.svg": "/re_for_me/static/media/pencil.1697c45221ca10d804482e5d39c424ca.svg",
     "static/media/indent-decrease.svg": "/re_for_me/static/media/indent-decrease.ca607e384a7531d11649.svg",
     "static/media/indent-increase.svg": "/re_for_me/static/media/indent-increase.d9f3d0625c0b6be97736.svg",
-    "main.dff770b3.css.map": "/re_for_me/static/css/main.dff770b3.css.map",
-    "main.405edcc9.js.map": "/re_for_me/static/js/main.405edcc9.js.map"
+    "main.364598fb.css.map": "/re_for_me/static/css/main.364598fb.css.map",
+    "main.bbf6d5ac.js.map": "/re_for_me/static/js/main.bbf6d5ac.js.map",
+    "Faculty___Page.45c08bf1.chunk.css.map": "/re_for_me/static/css/Faculty___Page.45c08bf1.chunk.css.map",
+    "Faculty___Page.f93e4a2b.chunk.js.map": "/re_for_me/static/js/Faculty___Page.f93e4a2b.chunk.js.map",
+    "FacultyList___Page.7d64051b.chunk.css.map": "/re_for_me/static/css/FacultyList___Page.7d64051b.chunk.css.map",
+    "FacultyList___Page.9dfb8fdf.chunk.js.map": "/re_for_me/static/js/FacultyList___Page.9dfb8fdf.chunk.js.map",
+    "University___Page.b64864dd.chunk.css.map": "/re_for_me/static/css/University___Page.b64864dd.chunk.css.map",
+    "University___Page.4d1aaca7.chunk.js.map": "/re_for_me/static/js/University___Page.4d1aaca7.chunk.js.map",
+    "NotFound___Page.60d3f18d.chunk.js.map": "/re_for_me/static/js/NotFound___Page.60d3f18d.chunk.js.map",
+    "126.732533c0.chunk.js.map": "/re_for_me/static/js/126.732533c0.chunk.js.map",
+    "590.fbeee9d3.chunk.js.map": "/re_for_me/static/js/590.fbeee9d3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.dff770b3.css",
-    "static/js/main.405edcc9.js"
+    "static/css/main.364598fb.css",
+    "static/js/main.bbf6d5ac.js"
   ]
 }
