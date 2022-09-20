@@ -9,7 +9,9 @@ import Loader from '../../common/Loader/Loader';
 import ErrorMsg from '../../common/ErrorMsg/ErrorMsg';
 import Paper from '../../common/Paper/Paper';
 // import * as api from '../../../services/api';
-import { addTutor } from '../../../redux/tutors/tutorsOperations';
+// import { addTutor } from '../../../redux/tutors/tutorsOperations';
+import { tutorsSelectors, tutorsOperations } from '../../../redux/tutors/index';
+
 import s from './TutorForm.module.css';
 
 const citiesOptions = [
@@ -194,12 +196,12 @@ TutorForm.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  loading: state.tutors.loading,
-  error: state.tutors.error,
+  loading: tutorsSelectors.getLoading(state),
+  error: tutorsSelectors.getError(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  onAddTutor: tutor => dispatch(addTutor(tutor)),
+  onAddTutor: tutor => dispatch(tutorsOperations.addTutor(tutor)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TutorForm);

@@ -9,10 +9,9 @@ import Paper from '../common/Paper/Paper';
 import TutorForm from './TutorForm/TutorForm';
 import Loader from '../common/Loader/Loader';
 import Skeleton from '../common/Skeleton/Skeleton';
+import { tutorsSelectors, tutorsOperations } from '../../redux/tutors';
 import addIcon from '../../images/plus.svg';
 import cancelIcon from '../../images/cancel-circle.svg';
-
-import { getTutors } from '../../redux/tutors/tutorsOperations';
 
 const TutorsBlock = ({ tutors, onGetTutors, loading, error }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -27,7 +26,10 @@ const TutorsBlock = ({ tutors, onGetTutors, loading, error }) => {
     setIsFormOpen(prevIsFormOpen => !prevIsFormOpen);
   }, []);
 
-  const noTutors = !tutors.length;
+  // const noTutors = !loading && tutors.length===0;
+  const noTutors = !loading && !tutors.length;
+  // const showTutors = !loading && tutors.length > 0;
+  const showTutors = !loading && !!tutors.length;
 
   return (
     <div>
@@ -35,7 +37,7 @@ const TutorsBlock = ({ tutors, onGetTutors, loading, error }) => {
 
       {loading && <Skeleton />}
 
-      {!!tutors.length && (
+      {showTutors && (
         <ul>
           {tutors.map(tutor => (
             <li key={tutor.id} css={{ marginBottom: '24px' }}>
@@ -68,14 +70,14 @@ const TutorsBlock = ({ tutors, onGetTutors, loading, error }) => {
 
 //Получаем состояние
 const mapStateToProps = state => ({
-  tutors: state.tutors.items,
-  loading: state.tutors.loading,
-  error: state.tutors.error,
+  tutors: tutorsSelectors.getTutors(state),
+  loading: tutorsSelectors.getFirstLoading(state),
+  error: tutorsSelectors.getError(state),
 });
 
 //Получаем методы для изменения состояняя:
 const mapDispatchToProps = dispatch => ({
-  onGetTutors: () => dispatch(getTutors()),
+  onGetTutors: () => dispatch(tutorsOperations.getTutors()),
 });
 
 // const connectTutors = connect(mapStateToProps, mapDispatchToProps);

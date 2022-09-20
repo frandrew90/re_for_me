@@ -4,11 +4,11 @@ import { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ThemeContext, themes } from '../../../context/themeContext';
 // import { changeFilter } from '../../../redux/cities/citiesActions';
-import { citiesActions } from '../../../redux/cities';
+import { citiesActions, citiesSelectors } from '../../../redux/cities';
 import s from './Filter.module.css';
 
 const Filter = ({ label = '', onFilterChange, value }) => {
-  const filter = useSelector(state => state.cities.filter);
+  const filter = useSelector(citiesSelectors.getFilter);
   const dispatch = useDispatch();
 
   const { theme } = useContext(ThemeContext);

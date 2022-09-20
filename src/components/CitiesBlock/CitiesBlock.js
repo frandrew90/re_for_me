@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-import { citiesActions, citiesOperations } from '../../redux/cities';
+import {
+  citiesActions,
+  citiesOperations,
+  citiesSelectors,
+} from '../../redux/cities';
 import BigButton from '../common/BigButton/BigButton';
 import Modal from '../common/Modal/Modal';
 import EditCard from '../common/EditCard/EditCard';
@@ -27,10 +31,10 @@ const ACTION = {
 const { getCities, addCity, editCity, deleteCity } = citiesOperations;
 
 const CitiesBlock = () => {
-  const cities = useSelector(state => state.cities.data.items);
-  const filter = useSelector(state => state.cities.filter);
-  const loading = useSelector(state => state.cities.data.loading);
-  const error = useSelector(state => state.cities.data.error);
+  const cities = useSelector(citiesSelectors.getCities);
+  const filter = useSelector(citiesSelectors.getFilter);
+  const loading = useSelector(citiesSelectors.getLoading);
+  const error = useSelector(citiesSelectors.getError);
   const dispatch = useDispatch();
   //form/modal
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
